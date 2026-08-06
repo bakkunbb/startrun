@@ -81,4 +81,3 @@ yarn-error.log
 
 # 테스트
 coverage/
-test/
