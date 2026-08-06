@@ -73,3 +73,12 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# 환경변수
+.env
+.env.*
+!.env.example
+
+# 테스트
+coverage/
+test/
