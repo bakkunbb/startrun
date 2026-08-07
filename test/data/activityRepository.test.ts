@@ -2,9 +2,9 @@ import { migrate } from '@/core/database/migrations';
 import type { SqlDatabase } from '@/core/database/types';
 import type { Activity } from '@/features/activity/domain/entities/Activity';
 import type { Segment } from '@/features/activity/domain/entities/Segment';
-import { ActivityLocalDataSource } from '@/features/activity/data/datasources/ActivityLocalDataSource';
-import { ActivityRepositoryImpl } from '@/features/activity/data/repositories/ActivityRepositoryImpl';
 import { createTestDb } from '../helpers/testDb';
+import { ActivityRepositoryImpl } from '@/features/activity/data/repositories/ActivityRepositoryImpl';
+import { ActivityLocalDataSource } from '@/features/activity/data/datasources/ActivityLocalDataSources';
 
 const seg = (index: number, distanceMeters: number, durationSeconds: number): Segment => ({
   index,
