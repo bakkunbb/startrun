@@ -2,10 +2,11 @@ import { ActivityRepositoryImpl } from "@/features/activity/data/repositories/Ac
 import { ActivityRepository } from "@/features/activity/domain/repositories/ActivityRepository";
 import { getDatabase } from "../database/client";
 import { ActivityLocalDataSource } from "@/features/activity/data/datasources/ActivityLocalDataSources";
+import { SaveActivity, makeSaveActivity } from "@/features/activity/domain/usecases/saveActivity";
 
 type Container = {
     activityRepository: ActivityRepository;
-    // saveActivity: SaveActviity;
+    saveActivity: SaveActivity;
 };
 
 let instance: Promise<Container> | null = null;
@@ -14,9 +15,10 @@ export function getContainer(): Promise<Container> {
     if (!instance) {
         instance = (async () => {
             const db = await getDatabase();
-            const activityLocal = new ActivityLocalDataSource(db);
+            const activityRepository = new ActivityRepositoryImpl(new ActivityLocalDataSource(db));
             return {
-                activityRepository: new ActivityRepositoryImpl(activityLocal),
+                activityRepository,
+                saveActivity: makeSaveActivity(activityRepository),
             };
         })();
     }
