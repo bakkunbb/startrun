@@ -81,3 +81,9 @@ yarn-error.log
 
 # 테스트
 coverage/
+
+# Supabase
+supabase/.temp/
+.env
+
+/scripts
