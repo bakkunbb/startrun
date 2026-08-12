@@ -1,4 +1,4 @@
-import { withSupabase } from 'npm:@supabase/server@^1'
+import { withSupabase } from 'npm:@supabase/server'
 
 const ANTHROPIC_API_KEY = Deno.env.get('ANTHROPIC_APIKEY')!;
 const MODEL = 'claude-sonnet-5';
@@ -104,13 +104,27 @@ export default {
             return Response.json({ error: 'images 배열이 필요합니다' }, { status: 400 });
         }
 
+        const ALLOWED_MEDIA_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+        type ImageInput = string | { data: string, mediaType?: string};
+
+        const normalized = (image as ImageInput[]).map((img) =>
+            typeof img === 'string' ? { data: img, mediaType: 'image/jpeg'} : img,
+        );
+
+        const bad = normalized.find((i) => !ALLOWED_MEDIA_TYPES.includes(i.mediaType ?? ''));
+        if(bad) {
+            return Response.json({error: `지원하지 않는 이미지 형식: ${bad.mediaType}` }, { status: 400 });
+        }
+
         const content = [
-            ...images.map((data) => ({
+            ...normalized.map((img) => ({
                 type: 'image',
                 source: {
                     type: 'base64',
-                    media_type: 'image/jpeg', data
-                },
+                    media_type: img.imageType,
+                    data: img.data
+                }
             })),
             {
                 type: 'text',
