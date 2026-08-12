@@ -72,6 +72,8 @@ export function inferSegmentKind(segments: Segment[], toleranceMeters?: number):
             return { kind: 'split', unitMeters: 1000 };
         } else if (Math.abs(average - 1609.34) <= tolerance) {
             return { kind: 'split', unitMeters: 1609.34 };
+        } else {
+            return { kind: 'unknown'};
         }
     }
 
