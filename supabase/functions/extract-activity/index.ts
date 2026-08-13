@@ -108,7 +108,7 @@ export default {
 
         type ImageInput = string | { data: string, mediaType?: string};
 
-        const normalized = (image as ImageInput[]).map((img) =>
+        const normalized = (images as ImageInput[]).map((img) =>
             typeof img === 'string' ? { data: img, mediaType: 'image/jpeg'} : img,
         );
 
@@ -122,7 +122,7 @@ export default {
                 type: 'image',
                 source: {
                     type: 'base64',
-                    media_type: img.imageType,
+                    media_type: img.mediaType,
                     data: img.data
                 }
             })),
@@ -131,6 +131,8 @@ export default {
                 text: '이 스크린샷들에서 러닝 기록을 추출해줘.'
             },
         ];
+
+        console.log('media types', normalized.map((i) => i.mediaType));
 
         const res = await fetch('https://api.anthropic.com/v1/messages', {
             method: 'POST',
@@ -141,7 +143,7 @@ export default {
             },
             body: JSON.stringify({
                 model: MODEL,
-                max_tokens: 2048,
+                max_tokens: 8192,
                 system: SYSTEM,
                 messages: [{ role: 'user', content }],
                 output_config: {
@@ -156,14 +158,14 @@ export default {
         if (!res.ok) {
             const detail = await res.text();
             console.error('anthropic error', res.status, detail);
-            return Response.json({ error: '추출실패' }, { status: 502 });
+            return Response.json({ error: '추출실패', detail }, { status: 502 });
         }
 
         const body = await res.json();
 
         // 안전장치: 거부되거나 토큰 한도에 걸리면 스키마가 안 지켜질 수 있다
         if (body.stop_reason === 'refusal' || body.stop_reason === 'max_tokens') {
-            return Response.json({ error: '추출 중단: ${body.stop_reason}' }, { status: 502 });
+            return Response.json({ error: '추출 중단', stop_reason: body.stop_reason, usage: body.usage }, { status: 502 });
         }
 
         const text = body.content.find((b: { type: string }) => b.type === 'text')?.text;
