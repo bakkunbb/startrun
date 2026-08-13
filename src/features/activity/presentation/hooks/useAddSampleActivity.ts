@@ -5,8 +5,6 @@ import { activityKeys } from './useActivities';
 export function useAddSampleActivity() {
     const queryClient = useQueryClient();
 
-    console.log('add called');
-
     return useMutation({
         mutationFn: async () => {
             const { saveActivity } = await getContainer();
