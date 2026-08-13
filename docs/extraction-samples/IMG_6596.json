@@ -1,0 +1,76 @@
+{
+    "startedAtIso": null,
+    "distanceMeters": null,
+    "durationSeconds": null,
+    "calories": null,
+    "segmentSets": [
+        {
+            "kind": "split",
+            "labelText": null,
+            "unitMeters": 1000,
+            "rows": [
+                {
+                    "index": 11,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 248
+                },
+                {
+                    "index": 12,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 241.7
+                },
+                {
+                    "index": 13,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 251.8
+                },
+                {
+                    "index": 14,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 249.8
+                },
+                {
+                    "index": 15,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 248.8
+                },
+                {
+                    "index": 16,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 250.9
+                },
+                {
+                    "index": 17,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 255.3
+                },
+                {
+                    "index": 18,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 251.3
+                },
+                {
+                    "index": 19,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 251.7
+                },
+                {
+                    "index": 20,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 249.2
+                },
+                {
+                    "index": 21,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 237.2
+                },
+                {
+                    "index": 22,
+                    "distanceMeters": 100,
+                    "durationSeconds": 18.2
+                }
+            ]
+        }
+    ],
+    "lowConfidenceFields": []
+}

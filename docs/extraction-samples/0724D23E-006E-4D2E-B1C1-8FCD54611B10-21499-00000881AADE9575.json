@@ -1,0 +1,116 @@
+{
+    "startedAtIso": null,
+    "distanceMeters": null,
+    "durationSeconds": null,
+    "calories": null,
+    "segmentSets": [
+        {
+            "kind": "lap",
+            "labelText": null,
+            "unitMeters": null,
+            "rows": [
+                {
+                    "index": 1,
+                    "distanceMeters": 200,
+                    "durationSeconds": 39.1
+                },
+                {
+                    "index": 2,
+                    "distanceMeters": 214,
+                    "durationSeconds": 87.3
+                },
+                {
+                    "index": 3,
+                    "distanceMeters": 199,
+                    "durationSeconds": 36.6
+                },
+                {
+                    "index": 4,
+                    "distanceMeters": 204,
+                    "durationSeconds": 88.6
+                },
+                {
+                    "index": 5,
+                    "distanceMeters": 201,
+                    "durationSeconds": 37.2
+                },
+                {
+                    "index": 6,
+                    "distanceMeters": 202,
+                    "durationSeconds": 85.9
+                },
+                {
+                    "index": 7,
+                    "distanceMeters": 203,
+                    "durationSeconds": 36.5
+                },
+                {
+                    "index": 8,
+                    "distanceMeters": 202,
+                    "durationSeconds": 86.4
+                },
+                {
+                    "index": 9,
+                    "distanceMeters": 198,
+                    "durationSeconds": 35.3
+                },
+                {
+                    "index": 10,
+                    "distanceMeters": 203,
+                    "durationSeconds": 88.9
+                },
+                {
+                    "index": 11,
+                    "distanceMeters": 200,
+                    "durationSeconds": 36.8
+                },
+                {
+                    "index": 12,
+                    "distanceMeters": 201,
+                    "durationSeconds": 86.8
+                },
+                {
+                    "index": 13,
+                    "distanceMeters": 198,
+                    "durationSeconds": 36.7
+                },
+                {
+                    "index": 14,
+                    "distanceMeters": 199,
+                    "durationSeconds": 88.3
+                },
+                {
+                    "index": 15,
+                    "distanceMeters": 202,
+                    "durationSeconds": 36.6
+                },
+                {
+                    "index": 16,
+                    "distanceMeters": 198,
+                    "durationSeconds": 85.6
+                },
+                {
+                    "index": 17,
+                    "distanceMeters": 203,
+                    "durationSeconds": 36.4
+                },
+                {
+                    "index": 18,
+                    "distanceMeters": 198,
+                    "durationSeconds": 85.8
+                },
+                {
+                    "index": 19,
+                    "distanceMeters": 208,
+                    "durationSeconds": 30.4
+                },
+                {
+                    "index": 20,
+                    "distanceMeters": 209,
+                    "durationSeconds": 87.7
+                }
+            ]
+        }
+    ],
+    "lowConfidenceFields": []
+}

@@ -1,0 +1,51 @@
+{
+    "startedAtIso": "2026-08-10T06:51:00",
+    "distanceMeters": 7030,
+    "durationSeconds": 2810,
+    "calories": 380,
+    "segmentSets": [
+        {
+            "kind": "split",
+            "labelText": "Splits",
+            "unitMeters": 1000,
+            "rows": [
+                {
+                    "index": 1,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 455
+                },
+                {
+                    "index": 2,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 433
+                },
+                {
+                    "index": 3,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 383
+                },
+                {
+                    "index": 4,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 383
+                },
+                {
+                    "index": 5,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 380
+                },
+                {
+                    "index": 6,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 385
+                },
+                {
+                    "index": 7,
+                    "distanceMeters": 1030,
+                    "durationSeconds": 391
+                }
+            ]
+        }
+    ],
+    "lowConfidenceFields": []
+}

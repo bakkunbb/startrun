@@ -1,0 +1,66 @@
+{
+    "startedAtIso": null,
+    "distanceMeters": null,
+    "durationSeconds": null,
+    "calories": null,
+    "segmentSets": [
+        {
+            "kind": "split",
+            "labelText": null,
+            "unitMeters": 1000,
+            "rows": [
+                {
+                    "index": 1,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 259.2
+                },
+                {
+                    "index": 2,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 246.2
+                },
+                {
+                    "index": 3,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 250
+                },
+                {
+                    "index": 4,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 232.2
+                },
+                {
+                    "index": 5,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 241
+                },
+                {
+                    "index": 6,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 247
+                },
+                {
+                    "index": 7,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 244
+                },
+                {
+                    "index": 8,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 241.2
+                },
+                {
+                    "index": 9,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 244
+                },
+                {
+                    "index": 10,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 244.2
+                }
+            ]
+        }
+    ],
+    "lowConfidenceFields": []
+}
