@@ -96,9 +96,9 @@ describe('inferSegmentKind', () => {
     expect(inferSegmentKind(segments)).toEqual({ kind: 'lap' });
   });
 
-  it('균일하지만 알려진 단위가 아니면 랩으로 본다', () => {
+  it('균일하지만 알려진 단위가 아니면 판단하지 않는다', () => {
     const segments = [seg(1, 500, 150), seg(2, 500, 148), seg(3, 500, 151)];
-    expect(inferSegmentKind(segments)).toEqual({ kind: 'lap' });
+    expect(inferSegmentKind(segments)).toEqual({ kind: 'unknown' });
   });
 
   it('구간이 1개뿐이면 근거가 부족하다', () => {

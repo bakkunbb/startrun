@@ -1,0 +1,58 @@
+{
+    "startedAtIso": null,
+    "distanceMeters": 7390,
+    "durationSeconds": 2256,
+    "calories": null,
+    "segmentSets": [
+        {
+            "kind": "split",
+            "labelText": null,
+            "unitMeters": 1000,
+            "rows": [
+                {
+                    "index": 1,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 318.4
+                },
+                {
+                    "index": 2,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 298.6
+                },
+                {
+                    "index": 3,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 293.4
+                },
+                {
+                    "index": 4,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 281.7
+                },
+                {
+                    "index": 5,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 288.7
+                },
+                {
+                    "index": 6,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 285.3
+                },
+                {
+                    "index": 7,
+                    "distanceMeters": 1000,
+                    "durationSeconds": 308.2
+                },
+                {
+                    "index": 8,
+                    "distanceMeters": 390,
+                    "durationSeconds": 181.2
+                }
+            ]
+        }
+    ],
+    "lowConfidenceFields": [
+        "durationSeconds"
+    ]
+}

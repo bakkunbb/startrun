@@ -13,17 +13,17 @@ export type NormalizeResult = {
     durationReading: Reading;
 };
 
-//** 총합의 2% 내외, 최소값 minAbs는 오차로 인정 */
+/** 총합의 2% 내외, 최소값 minAbs는 오차로 인정 */
 function toleranceFor(total: number, minAbs: number): number {
     return Math.max(Math.abs(total) * 0.02, minAbs);
 }
 
-//** 값이 순증가하는지 확인 */
+/** 값이 순증가하는지 확인 */
 function isIncreasing(values: number[]): boolean {
     return values.every((v, i) => i === 0 || v > values[i - 1]);
 }
 
-//** 누적값 -> 구간값 반환 */
+/** 누적값 -> 구간값 반환 */
 function diffFromCumulative(values: number[]): number [] {
     return values.map((v, i) => i === 0 ? v : v - values[i - 1]);
 }
