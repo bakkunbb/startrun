@@ -1,5 +1,5 @@
 import { inferSegmentKind, Segment } from "@/features/activity/domain/entities/Segment";
-import { ExtractionDto } from "../data/models/ExtractionDto";
+import { ExtractionDto, SegmentSetDto } from "../data/models/ExtractionDto";
 import { ExtractedActivity, ExtractionWarning } from "./entities/ExtractedActivity";
 import { normalizeSegmentRows, RawSegmentRow } from "./normalizeSegments";
 
@@ -26,10 +26,20 @@ function checkDuration(durationSeconds: number | null): ExtractionWarning | null
     return null;
 }
 
-function renumber(rows: RawSegmentRow[]): RawSegmentRow[] {
-    return [...rows]
-        .sort((a, b) => a.index - b.index)
-        .map((r, i) => ({...r, index: i + 1}));
+// function renumber(rows: RawSegmentRow[]): RawSegmentRow[] {
+//     return [...rows]
+//         .sort((a, b) => a.index - b.index)
+//         .map((r, i) => ({...r, index: i + 1}));
+// }
+
+/** 표 안에서만 순서를 바로잡는다. 번호는 그대로 둔다 */
+function orderWithin(rows: RawSegmentRow[]): RawSegmentRow[] {
+  return [...rows].sort((a, b) => a.index - b.index);
+}
+
+/** 최종 순서대로 1..n을 매긴다. 정렬하지 않는다 */
+function assignSequential(rows: RawSegmentRow[]): RawSegmentRow[] {
+  return rows.map((r, i) => ({ ...r, index: i + 1 }));
 }
 
 function calculateWarnings(dto: ExtractionDto): ExtractionWarning[] {
@@ -60,19 +70,31 @@ export function toExtractedActivity(dto: ExtractionDto): ExtractedActivity {
     let laps: Segment[] | undefined;
     let splitUnitMeters: number | undefined;
 
-    for(const segmentSetDto of dto.segmentSets) {
-        if(segmentSetDto.rows.length === 0) continue;
-        
-        const norm = normalizeSegmentRows(renumber(segmentSetDto.rows), total);
+    const grouped: Record<SegmentSetDto['kind'], RawSegmentRow[]> = {
+        split: [],
+        lap: [],
+        unknown: [],
+    };
+    let declaredUnit: number | undefined;
+
+    for(const set of dto.segmentSets ?? []) {
+        if(!set.rows || set.rows.length === 0) continue;
+        grouped[set.kind].push(...orderWithin(set.rows));
+        if (set.kind === 'split' && set.unitMeters != null) {
+            declaredUnit ??= set.unitMeters;
+        }
+    }
+
+    for(const [declared, rows] of Object.entries(grouped)) {
+        if(rows.length === 0) continue;
+
+        const norm = normalizeSegmentRows(assignSequential(rows), total);
         const segments: Segment[] = norm.rows;
 
-        const inferred = segmentSetDto.kind === 'unknown' ? inferSegmentKind(segments) : null;
+        const inferred = declared === 'unknown' ? inferSegmentKind(segments) : null;
         const kind = inferred && inferred.kind !== 'unknown'
             ? inferred.kind
-            : segmentSetDto.kind !== 'unknown' ? segmentSetDto.kind : 'lap';
-
-        const alreadyFilled = kind === 'split' ? splits !== undefined : laps !== undefined;
-        if(alreadyFilled) continue;
+            : declared !== 'unknown' ? declared : 'lap';
 
         if(inferred?.kind === 'unknown') {
             warnings.add('unknown_segment_kind');
@@ -85,13 +107,17 @@ export function toExtractedActivity(dto: ExtractionDto): ExtractedActivity {
             warnings.add('segments_unverified');
         }
 
-        if(kind === 'split') {
-            splits = segments;
-            splitUnitMeters = (inferred?.kind === 'split' ? inferred.unitMeters : segmentSetDto.unitMeters) ?? undefined;
+        if (kind === 'split') {
+            const reindexed = [...segments].map((r, i) => ({...r, index: splits ? splits.length + i + 1 : i + 1}));
+            splits = splits ? [...splits, ...reindexed] : reindexed;
+            splitUnitMeters = (inferred?.kind === 'split' ? inferred.unitMeters : declaredUnit) ?? undefined;
         } else {
-            laps = segments;
+            laps = laps ? [...laps, ...segments] : segments;
         }
     }
+
+    if (splits) splits = assignSequential(splits);
+    if (laps) laps = assignSequential(laps);
 
     return {
         startedAt: date,

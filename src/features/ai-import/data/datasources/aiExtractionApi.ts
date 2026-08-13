@@ -15,6 +15,12 @@ export class ExtractionError extends Error {
 
 export async function requestExtraction(images: PickedImage[]): Promise<ExtractionDto> {
     
+    if (__DEV__) {
+        console.log('[extraction] URL', EXTRACT_FUNCTION_URL);
+        console.log('[extraction] 이미지', images.map((i) => `${i.width}x${i.height} ${i.mimeType}`));
+        console.log('[extraction] 크기 MB', (JSON.stringify({ images }).length / 1048576).toFixed(2));
+    }
+
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
     
@@ -28,7 +34,7 @@ export async function requestExtraction(images: PickedImage[]): Promise<Extracti
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    images: images.map((i) => ({ data: i.data, mediaType: i.mediaType})),
+                    images: images.map((i) => ({ data: i.data, mediaType: i.mimeType})),
                 }),
             }
         );
@@ -44,11 +50,16 @@ export async function requestExtraction(images: PickedImage[]): Promise<Extracti
             throw new ExtractionError('parse', '응답을 읽을 수 없습니다');
         }
 
-        if(!isExtractionDto(body)) {
-            throw new ExtractionError('parse', '응답 형식이 올바르지 않습니다');
-        }
+        if (__DEV__) console.log('[extraction] 응답', JSON.stringify(body).slice(0, 600));
 
-        return body;
+        const problem = describeDtoProblem(body);
+
+        if (problem) {
+            if (__DEV__) console.warn('[extraction] 형식 불일치', problem, body);
+            throw new ExtractionError('parse', `응답 형식이 올바르지 않습니다 (${problem})`);
+        }
+        
+        return body as ExtractionDto;
 
     } catch(error) {
         if(error instanceof ExtractionError) throw error;
@@ -65,8 +76,10 @@ export async function requestExtraction(images: PickedImage[]): Promise<Extracti
 /** Edge Function은 { error: '...' } 형태로 실패를 알려줌 */
 async function readServerMessage(response: Response): Promise<string> {
     try {
-        const body = (await response.json()) as { error?: unknown };
-        if(typeof body.error === 'string') return body.error;
+        const body = (await response.json()) as { stop_reason: any; error?: unknown };
+        if(typeof body.error === 'string') {
+            return body.stop_reason ? `${body.error} (${body.stop_reason})` : body.error;
+        }
     } catch {
 
     }
@@ -74,20 +87,21 @@ async function readServerMessage(response: Response): Promise<string> {
     return `서버 오류가 발생했습니다 (${response.status})`;
 }
 
-/** 신뢰 경계 - 통과한 값만 도메은으로 */
-function isExtractionDto(v: unknown): v is ExtractionDto {
-    if(typeof v !== 'object' || v === null) return false;
-    const d = v as Record<string, unknown>;
+/** 문제가 있으면 사유를, 없으면 null을 돌려준다 */
+function describeDtoProblem(v: unknown): string | null {
+  if (typeof v !== 'object' || v === null) return `객체가 아님: ${typeof v}`;
+  const d = v as Record<string, unknown>;
 
-    const nullableString = (x: unknown) => x === null || typeof x === 'string';
-    const nullableNumber = (x: unknown) => x === null || typeof x === 'number';
+  const bad: string[] = [];
+  const nullableString = (x: unknown) => x === null || typeof x === 'string';
+  const nullableNumber = (x: unknown) => x === null || typeof x === 'number';
 
-    return(
-        nullableString(d.startedAtIso) &&
-        nullableNumber(d.distanceMeters) &&
-        nullableNumber(d.durationSeconds) &&
-        nullableNumber(d.calories) &&
-        Array.isArray(d.segmentsSet) &&
-        Array.isArray(d.lowConfidenceFields)
-    );
+  if (!nullableString(d.startedAtIso)) bad.push(`startedAtIso=${JSON.stringify(d.startedAtIso)}`);
+  if (!nullableNumber(d.distanceMeters)) bad.push(`distanceMeters=${JSON.stringify(d.distanceMeters)}`);
+  if (!nullableNumber(d.durationSeconds)) bad.push(`durationSeconds=${JSON.stringify(d.durationSeconds)}`);
+  if (!nullableNumber(d.calories)) bad.push(`calories=${JSON.stringify(d.calories)}`);
+  if (!Array.isArray(d.segmentSets)) bad.push(`segmentSets=${JSON.stringify(d.segmentSets)}`);
+  if (!Array.isArray(d.lowConfidenceFields)) bad.push(`lowConfidenceFields=${JSON.stringify(d.lowConfidenceFields)}`);
+
+  return bad.length > 0 ? bad.join(', ') : null;
 }
