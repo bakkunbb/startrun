@@ -3,8 +3,8 @@ import {
   parseDistanceKm,
   parseDuration,
 } from '@/features/ai-import/domain/parseInput';
-// import { toActivity, validateDraft } from '@/features/ai-import/domain/reviewDraft';
-// import type { ReviewDraft } from '@/features/ai-import/domain/reviewDraft';
+import { toActivity, validateDraft } from '@/features/ai-import/domain/reviewDraft';
+import type { ReviewDraft } from '@/features/ai-import/domain/reviewDraft';
 
 describe('parseDistanceKm', () => {
   it('km 문자열을 미터로 바꾼다', () => {
@@ -67,58 +67,58 @@ describe('parseCalories', () => {
   });
 });
 
-// const draft = (over: Partial<ReviewDraft> = {}): ReviewDraft => ({
-//   startedAt: new Date('2026-07-24T06:12:00'),
-//   distanceMeters: 10240,
-//   durationSeconds: 3151,
-//   ...over,
-// });
+const draft = (over: Partial<ReviewDraft> = {}): ReviewDraft => ({
+  startedAt: new Date('2026-07-24T06:12:00'),
+  distanceMeters: 10240,
+  durationSeconds: 3151,
+  ...over,
+});
 
-// const NOW = new Date('2026-08-13T12:00:00');
+const NOW = new Date('2026-08-13T12:00:00');
 
-// describe('validateDraft', () => {
-//   it('채워져 있으면 오류가 없다', () => {
-//     expect(validateDraft(draft(), NOW)).toEqual([]);
-//   });
+describe('validateDraft', () => {
+  it('채워져 있으면 오류가 없다', () => {
+    expect(validateDraft(draft(), NOW)).toEqual([]);
+  });
 
-//   it('필수 항목이 비면 각각 보고한다', () => {
-//     const errors = validateDraft(
-//       draft({ distanceMeters: null, durationSeconds: null, startedAt: null }),
-//       NOW,
-//     );
+  it('필수 항목이 비면 각각 보고한다', () => {
+    const errors = validateDraft(
+      draft({ distanceMeters: null, durationSeconds: null, startedAt: null }),
+      NOW,
+    );
 
-//     expect(errors).toEqual(['distance_required', 'duration_required', 'started_at_required']);
-//   });
+    expect(errors).toEqual(['distance_required', 'duration_required', 'started_at_required']);
+  });
 
-//   it('0 이하는 거부한다', () => {
-//     expect(validateDraft(draft({ distanceMeters: 0 }), NOW)).toEqual(['distance_invalid']);
-//     expect(validateDraft(draft({ durationSeconds: -1 }), NOW)).toEqual(['duration_invalid']);
-//   });
+  it('0 이하는 거부한다', () => {
+    expect(validateDraft(draft({ distanceMeters: 0 }), NOW)).toEqual(['distance_invalid']);
+    expect(validateDraft(draft({ durationSeconds: -1 }), NOW)).toEqual(['duration_invalid']);
+  });
 
-//   it('미래 시각은 거부하되 시계 오차는 허용한다', () => {
-//     expect(validateDraft(draft({ startedAt: new Date('2026-09-01') }), NOW)).toEqual([
-//       'started_at_future',
-//     ]);
-//     expect(validateDraft(draft({ startedAt: new Date(NOW.getTime() + 30_000) }), NOW)).toEqual([]);
-//   });
-// });
+  it('미래 시각은 거부하되 시계 오차는 허용한다', () => {
+    expect(validateDraft(draft({ startedAt: new Date('2026-09-01') }), NOW)).toEqual([
+      'started_at_future',
+    ]);
+    expect(validateDraft(draft({ startedAt: new Date(NOW.getTime() + 30_000) }), NOW)).toEqual([]);
+  });
+});
 
-// describe('toActivity', () => {
-//   it('Activity로 옮긴다', () => {
-//     const a = toActivity(
-//       draft({ calories: 642, laps: [{ index: 1, distanceMeters: 400, durationSeconds: 80 }] }),
-//       'x1',
-//     );
+describe('toActivity', () => {
+  it('Activity로 옮긴다', () => {
+    const a = toActivity(
+      draft({ calories: 642, laps: [{ index: 1, distanceMeters: 400, durationSeconds: 80 }] }),
+      'x1',
+    );
 
-//     expect(a.id).toBe('x1');
-//     expect(a.source).toBe('ai_import');
-//     expect(a.distanceMeters).toBe(10240);
-//     expect(a.calories).toBe(642);
-//     expect(a.laps).toHaveLength(1);
-//     expect(a.externalId).toBeUndefined();
-//   });
+    expect(a.id).toBe('x1');
+    expect(a.source).toBe('ai_import');
+    expect(a.distanceMeters).toBe(10240);
+    expect(a.calories).toBe(642);
+    expect(a.laps).toHaveLength(1);
+    expect(a.externalId).toBeUndefined();
+  });
 
-//   it('검증을 통과하지 못하면 던진다', () => {
-//     expect(() => toActivity(draft({ distanceMeters: null }), 'x1')).toThrow(/distance_required/);
-//   });
-// });
+  it('검증을 통과하지 못하면 던진다', () => {
+    expect(() => toActivity(draft({ distanceMeters: null }), 'x1')).toThrow(/distance_required/);
+  });
+});
