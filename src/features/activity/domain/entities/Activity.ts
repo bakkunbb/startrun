@@ -2,6 +2,12 @@ import { Segment, SegmentView } from './Segment';
 
 export type ActivitySource = 'gps' | 'strava' | 'health' | 'ai_import';
 
+export type SegmentBearing = {
+    laps?: Segment[];
+    splits?: Segment[];
+    splitUnitMeters?: number;
+}
+
 export interface Activity {
     id: string;
     source: ActivitySource;
@@ -29,7 +35,8 @@ export function paceSecPerKm(activity: Activity): number | null {
  * 표시·계산의 기준이 되는 한 벌을 고른다.
  * 랩이 있으면 랩, 없으면 자동 분할, 둘 다 없거나 단위를 모르면 null.
  */
-export function primarySegments(activity: Activity): SegmentView | null {
+// export function primarySegments(activity: Activity): SegmentView | null {
+export function primarySegments(activity: SegmentBearing): SegmentView | null {
     if (activity.laps && activity.laps.length > 0) {
         return { kind: 'lap', segments: activity.laps };
     } else if (activity.splits && activity.splitUnitMeters) {
