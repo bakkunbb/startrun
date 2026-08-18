@@ -17,7 +17,8 @@ export function useReviewDraft(extracted: ExtractedActivity): {
     inputs: {
         distance: string;
         duration: string;
-        calories: string
+        calories: string;
+        note: string;
     };
 } {
 
@@ -34,7 +35,7 @@ export function useReviewDraft(extracted: ExtractedActivity): {
     const durationSeconds = parseDuration(durationInput);
 
     const [caloriesInput, setCaloriesInput] = useState(
-        extracted.calories === null ? '' : String(extracted.calories),
+        extracted.calories === null || extracted.calories === undefined ? '' : String(extracted.calories),
     );
     const calories = parseCalories(caloriesInput);
 
@@ -66,7 +67,8 @@ export function useReviewDraft(extracted: ExtractedActivity): {
         inputs: {
             distance: distanceInput,
             duration: durationInput,
-            calories: caloriesInput
+            calories: caloriesInput,
+            note: note,
         }
     }
 }

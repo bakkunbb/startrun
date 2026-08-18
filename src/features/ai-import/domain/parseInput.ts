@@ -19,7 +19,7 @@ export function parseDuration(input: string): number | null {
     if (!timeFormatRegex.test(d)) return null;
     
     const parts = d.split(':');
-    console.log(parts);
+
     if(parts.length > 3) return null;
 
     const nums = parts.map((v) => parseInt(v, 10));
