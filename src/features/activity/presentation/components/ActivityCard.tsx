@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Activity, paceSecPerKm, primarySegments } from '../../domain/entities/Activity';
+import { Activity, paceSecPerKm, primarySegments, SegmentBearing, } from '../../domain/entities/Activity';
 import { formatDistanceKm, formatDuration, formatMonthDay, formatPace } from '@/core/utils/format';
 import { colors, spacing, radius } from '@/app/theme';
 import { SourceBadge } from './SourceBadge';
@@ -19,7 +19,7 @@ export default function ActivityCard({ activity }: { activity: Activity }) {
                 {' • '}
                 {`${formatPace(paceSecPerKm(activity))}/km`}
                 {' • '}
-                {`구간 ${primarySegments(activity)?.segments.length ?? '없음'}`}</Text>
+                {`구간 ${primarySegments(activity as SegmentBearing)?.segments.length ?? '없음'}`}</Text>
         </View>
     )
 }
