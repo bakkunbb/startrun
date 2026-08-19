@@ -1,4 +1,4 @@
-import { Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from "react-native";
+import { Alert, Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from "react-native";
 import { ExtractionWarning } from "../../domain/entities/ExtractedActivity";
 import { useReviewDraft } from "../hooks/useReviewDraft";
 import { useMemo } from "react";
@@ -12,6 +12,8 @@ import { useSaveImported } from "../hooks/useSaveImported";
 import { RootStackParamList } from "@/app/navigation/RootNavigator";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
+import { useDuplicateCheck } from "../hooks/useDuplicateCheck";
+import { formatDistanceKm, formatMonthDay } from "@/core/utils/format";
 
 const WARNING_MESSAGES: Record<ExtractionWarning, string> = {
     missing_started_at: '날짜를 읽지 못했습니다. 직접 입력해주세요.',
@@ -29,20 +31,44 @@ export default function ReviewScreen({ route }: { route: any }) {
     const { dto } = route.params;
     const extracted = useMemo(() => toExtractedActivity(dto), [dto]);
     const review = useReviewDraft(extracted);
+    const draft = review.draft;
 
     const view = primarySegments(review.draft);
 
     const saveImported = useSaveImported();
+    const { data: duplicates = [] } = useDuplicateCheck(review.draft.startedAt);
 
-    const onSave = async () => {
+    const doSave = (id?: string) => {
         saveImported.mutate(
-            review,
+            { draft, id },
             {
                 onSuccess: () => navigation.popToTop(),
+                onError: (_) => {
+                    Alert.alert('저장하지 못했습니다', '잠시 후 다시 시도해주세요.');
+                }
             }
-        );
+        )
+    };
+
+    const onSave = async () => {
+        if (!review.canSave || saveImported.isPending) return;
+
+        if (duplicates.length === 0) {
+            doSave();
+            return;
+        }
+
+        const exsisting = duplicates[0];
+        Alert.alert(
+            '비슷한 시각의 기록이 있습니다.',
+            `${formatMonthDay(exsisting.startedAt)} · ${formatDistanceKm(exsisting.distanceMeters)} km`,
+            [
+                { text: '취소', style: 'cancel' },
+                { text: '새로 저장', onPress: () => doSave() },
+                { text: '덮어쓰기', style: 'destructive', onPress: () => doSave(exsisting.id) }
+            ]
+        )
     }
-    // const onSave = useSaveImported();
 
     return (
         <KeyboardAvoidingView
@@ -61,7 +87,7 @@ export default function ReviewScreen({ route }: { route: any }) {
                             lines={extracted.warnings.map((w) => WARNING_MESSAGES[w])}
                         />
                     ) : null}
-                    <SumamryCard activity={extracted} />
+                    <SumamryCard activity={extracted} review={review} />
                     {view ? <SegmentTable view={view} /> : null}
                 </View >
             </ScrollView>
