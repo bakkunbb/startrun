@@ -51,7 +51,7 @@ function calculateWarnings(dto: ExtractionDto): ExtractionWarning[] {
     if(distanceWarning != null) warnings.push(distanceWarning);
     const durationWarning = checkDuration(dto.durationSeconds);
     if(durationWarning != null) warnings.push(durationWarning);
-    
+
     return warnings;
 }
 

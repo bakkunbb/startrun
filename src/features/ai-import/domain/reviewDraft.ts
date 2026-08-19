@@ -39,7 +39,7 @@ export function validateDraft(draft: ReviewDraft, now?: Date): ValidationError[]
     } else if(draft.startedAt > new Date((now ?? new Date()).getTime() + 30_000)) {
         err.push('started_at_future');
     }
-    
+
     return err;
 }
 
