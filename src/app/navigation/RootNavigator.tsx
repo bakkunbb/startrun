@@ -1,4 +1,5 @@
 import { ActivityListScreen } from "@/features/activity/presentation/screens/ActivityListScreen";
+import { DetailScreen } from "@/features/activity/presentation/screens/DetailScreen";
 import { ExtractionDto } from "@/features/ai-import/data/models/ExtractionDto";
 import ImportScreen from "@/features/ai-import/presentation/screens/ImportScreen";
 import ReviewScreen from "@/features/ai-import/presentation/screens/ReviewScreen";
@@ -9,6 +10,7 @@ export type RootStackParamList = {
     ActivityList: undefined;
     Import: undefined;
     Review: { dto: ExtractionDto };
+    Detail: { id: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -31,6 +33,11 @@ export function RootNavigator() {
                     name="Review"
                     component={ReviewScreen}
                     options={{ title: '기록 검토' }}
+                />
+                <Stack.Screen
+                    name="Detail"
+                    component={DetailScreen}
+                    options={{ title: '상세 기록' }}
                 />
             </Stack.Navigator>
         </NavigationContainer>
