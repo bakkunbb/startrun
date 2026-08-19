@@ -1,11 +1,7 @@
 import { getContainer } from "@/core/di/container";
 import { useQuery } from "@tanstack/react-query";
 import { Activity } from "../../domain/entities/Activity";
-
-export const activityKeys = {
-    all: ['activities'] as const,
-    detail: (id: string) => ['activities', id] as const,
-};
+import { activityKeys } from "./activityKeys";
 
 export function useActivities() {
     return useQuery<Activity[]>({

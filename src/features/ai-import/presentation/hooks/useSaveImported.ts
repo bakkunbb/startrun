@@ -2,8 +2,8 @@ import { Activity } from "@/features/activity/domain/entities/Activity";
 import { ReviewDraft, toActivity } from "../../domain/reviewDraft";
 import { useMutation, UseMutationResult, useQueryClient } from "@tanstack/react-query";
 import { getContainer } from "@/core/di/container";
-import { activityKeys } from "@/features/activity/presentation/hooks/useActivities";
 import { newId } from "@/core/utils/id";
+import { activityKeys } from "@/features/activity/presentation/hooks/activityKeys";
 
 export function useSaveImported(): UseMutationResult<
     Activity, Error, { draft: ReviewDraft; id?: string }
