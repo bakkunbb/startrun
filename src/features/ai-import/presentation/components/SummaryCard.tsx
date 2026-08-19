@@ -1,11 +1,14 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Field } from "./SummaryField";
 import { ExtractedActivity } from "../../domain/entities/ExtractedActivity";
 import { useReviewDraft } from "../hooks/useReviewDraft";
+import { useState } from "react";
+import DatePicker from "react-native-date-picker";
 
-export function SumamryCard({ activity }: { activity: ExtractedActivity }) {
+export function SumamryCard({ activity, review }: { activity: ExtractedActivity; review: ReturnType<typeof useReviewDraft>; }) {
 
-    const review = useReviewDraft(activity);
+    const [date, setDate] = useState(review.draft.startedAt ?? new Date())
+    const [open, setOpen] = useState(false)
 
     return (
         <View style={cardStyles.card}>
@@ -23,7 +26,30 @@ export function SumamryCard({ activity }: { activity: ExtractedActivity }) {
                 invalid={activity.lowConfidenceFields.includes('durationSeconds')}
                 hint="52:31 또는 1:02:03 형식"
             />
-            <Text>{review.draft.startedAt?.toDateString()}</Text>
+            <View>
+                <View style={styles.row}>
+                    <Text style={styles.label}>날짜</Text>
+                    <Pressable
+                        onPress={() => {
+                            setOpen(true);
+                        }}>
+                        <Text>{review.draft.startedAt?.toDateString()}</Text>
+                        <DatePicker
+                            modal
+                            open={open}
+                            date={date}
+                            onConfirm={(selected) => {
+                                setOpen(false);
+                                setDate(selected);
+                                review.setStartedAt(selected);
+                            }}
+                            onCancel={() => {
+                                setOpen(false)
+                            }}
+                        />
+                    </Pressable>
+                </View>
+            </View>
             <Field
                 label="칼로리" unit="kcal"
                 value={review.inputs.calories} onChangeText={review.setCaloriesInput}
@@ -40,5 +66,19 @@ const cardStyles = StyleSheet.create({
         borderRadius: 12,
         padding: 16,
         marginHorizontal: 16,
+    },
+});
+
+const styles = StyleSheet.create({
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        minHeight: 48,
+        gap: 8,
+    },
+    label: {
+        width: 56,
+        fontSize: 14,
+        color: '#6B7280',
     },
 });
