@@ -16,6 +16,18 @@ export function segmentPaceSecPerKm(segment: Segment): number | null {
     return (segment.durationSeconds / segment.distanceMeters) * 1000;
 }
 
+export type SegmentSummary = {
+    /** 표시용 전체 구간 수*/
+    count: number;
+    /** 계산에 쓴 구간 수 */
+    measuredCount: number;
+    fastestPace: number;
+    slowestPace: number;
+    averagePace: number;
+    /** 최고와 최저의 차이 - 페이스가 얼마나 일정했는지 */
+    spread: number;
+}
+
 /**
  * index(1-based)가 자투리 구간인지.
  * 자동 분할의 마지막 구간이면서 단위의 90% 미만일 때만 true.
@@ -78,4 +90,48 @@ export function inferSegmentKind(segments: Segment[], toleranceMeters?: number):
     }
 
     return { kind: 'lap' };
+}
+
+/** 구간이 없거나 페이스를 낼 수 없으면 null */
+export function segmentSummary(view: SegmentView | null): SegmentSummary | null {
+    if(view === null) return null;
+    if(view.segments.length === 0) return null;
+
+    // let count = view.segments.length;
+    let segments = view.segments;
+
+    if(view.kind === 'split') {
+        segments = segments.filter(s => !isRemainder(view, s.index));
+    }
+
+    // const fastestPace = segments.reduce((a, b) => a === null ? 0 : segmentPaceSecPerKm(a) > b === null ? 0 : segmentPaceSecPerKm(b) ? a : b, segments[0]);
+    let fastestPace = Infinity;
+    let slowestPace = 0;
+
+    for (const split of segments) {
+        const pace = segmentPaceSecPerKm(split);
+        if (pace === null) continue;
+        if (pace < fastestPace) {
+            fastestPace = pace;
+        } else {
+            if(pace > slowestPace) {
+                slowestPace = pace;
+            }
+        }
+    }
+
+    const durationSum = segments.reduce((a, b) => a + b.durationSeconds, 0);
+    const distanceSum = segments.reduce((a, b) => a + b.distanceMeters, 0);
+
+    if(fastestPace === Infinity || distanceSum <= 0) return null;
+
+    return {
+        count: view.segments.length,
+        measuredCount: segments.length,
+        fastestPace: fastestPace,
+        slowestPace: slowestPace,
+        averagePace: durationSum / distanceSum * 1000,
+        spread: slowestPace - fastestPace
+    };
+
 }
