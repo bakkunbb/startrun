@@ -23,7 +23,7 @@ export function useReviewDraft(extracted: ExtractedActivity): {
 } {
 
     const [startedAt, setStartedAt] = useState(extracted.startedAt);
-    
+
     const [distanceInput, setDistanceInput] = useState(
         extracted.distanceMeters === null ? '' : formatDistanceKm(extracted.distanceMeters),
     );
