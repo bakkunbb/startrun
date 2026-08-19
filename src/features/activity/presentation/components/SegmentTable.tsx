@@ -22,6 +22,9 @@ export function SegmentTable({ view }: { view: SegmentView }) {
                 const remainder = isRemainder(view, s.index);
                 const best = fastest?.index === s.index;
                 const tone = [remainder && styles.dim, best && styles.best];
+                const distance = view.kind === 'split'
+                    ? `${formatDistanceKm(s.distanceMeters)} km`
+                    : `${s.distanceMeters} m`;
 
                 return (
                     <View key={s.index} style={styles.row}>
@@ -29,7 +32,7 @@ export function SegmentTable({ view }: { view: SegmentView }) {
                             {s.index}
                         </Text>
                         <Text style={[styles.cell, styles.value, ...tone]}>
-                            {formatDistanceKm(s.distanceMeters)} km
+                            {distance}
                         </Text>
                         <Text style={[styles.cell, styles.value, ...tone]}>
                             {formatDuration(s.durationSeconds)}
