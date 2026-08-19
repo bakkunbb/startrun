@@ -1,4 +1,4 @@
-import { Alert, Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, Pressable, PressableStateCallbackType, ScrollView, StyleSheet, Text, View } from "react-native";
 import { ExtractionWarning } from "../../domain/entities/ExtractedActivity";
 import { useReviewDraft } from "../hooks/useReviewDraft";
 import { useMemo } from "react";
@@ -37,6 +37,8 @@ export default function ReviewScreen({ route }: { route: any }) {
 
     const saveImported = useSaveImported();
     const { data: duplicates = [] } = useDuplicateCheck(review.draft.startedAt);
+
+    const disabled = !review.canSave || saveImported.isPending;
 
     const doSave = (id?: string) => {
         saveImported.mutate(
@@ -92,8 +94,28 @@ export default function ReviewScreen({ route }: { route: any }) {
                 </View >
             </ScrollView>
             <View style={[styles.bar, { paddingBottom: insets.bottom + 12 }]}>
-                <Button title="저장" disabled={!review.canSave} onPress={onSave} />
+                <Pressable
+                    style={({ pressed }: PressableStateCallbackType) => [
+                        styles.saveButton,
+                        pressed && styles.pressed,
+                        disabled && styles.saveButtonOff,
+                    ]}
+                    disabled={disabled}
+                    onPress={onSave}
+                >
+                    {saveImported.isPending
+                        ? (
+                            <ActivityIndicator color="#FFFFFF" />
+                        )
+                        : (
+                            <Text style={styles.saveText}>저장</Text>
+                        )
+                    }
+                </Pressable>
             </View>
+            {/* <View style={[styles.bar, { paddingBottom: insets.bottom + 12 }]}>
+                <Button title="저장" disabled={!review.canSave} onPress={onSave} />
+            </View> */}
         </KeyboardAvoidingView>
     );
 }
@@ -107,5 +129,23 @@ const styles = StyleSheet.create({
         borderTopWidth: StyleSheet.hairlineWidth,
         borderTopColor: '#E5E7EB',
         backgroundColor: '#FFFFFF',
+    },
+    saveButton: {
+        height: 52,
+        borderRadius: 12,
+        backgroundColor: '#1D4ED8',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    pressed: {
+        backgroundColor: '#1A43B8',
+    },
+    saveButtonOff: {
+        backgroundColor: '#C7D2E4',
+    },
+    saveText: {
+        color: '#FFFFFF',
+        fontSize: 17,
+        fontWeight: '600',
     },
 });
