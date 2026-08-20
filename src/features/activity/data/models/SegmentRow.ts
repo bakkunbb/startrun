@@ -6,6 +6,7 @@ export interface SegmentRow {
     idx: number;
     distance_m: number;
     duration_s: number;
+    hr: number;
 }
 
 export function toSegmentEntity(row: SegmentRow): Segment {
@@ -13,6 +14,7 @@ export function toSegmentEntity(row: SegmentRow): Segment {
         index: row.idx,
         distanceMeters: row.distance_m,
         durationSeconds: row.duration_s,
+        heartRate: row.hr,
     };
 }
 
@@ -23,6 +25,7 @@ export function toSegmentRow(activityId: string, kind: SegmentKind, segment: Seg
         idx: segment.index,
         distance_m: segment.distanceMeters,
         duration_s: segment.durationSeconds,
+        hr: segment.heartRate,
     };
 }
 

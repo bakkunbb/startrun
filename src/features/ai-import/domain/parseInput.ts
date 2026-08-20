@@ -27,7 +27,7 @@ export function parseDuration(input: string): number | null {
 }
 
 /** '642' → 642. 빈 문자열은 값 없음이므로 undefined, 형식 오류는 null */
-export function parseCalories(input: string): number | undefined | null {
+export function parsePureNum(input: string): number | undefined | null {
     if (input.trim() === '') return undefined;
     const calories = Number.parseInt(input, 10);
     return Number.isFinite(calories) && calories >= 0 ? calories : null;

@@ -2,6 +2,7 @@ export interface Segment {
     index: number;          // 1부터 시작
     distanceMeters: number;
     durationSeconds: number;
+    heartRate: number;
 }
 
 export type SegmentKind = 'split' | 'lap';  //split => 자동분할 / lap => 수동 랩
@@ -26,6 +27,8 @@ export type SegmentSummary = {
     averagePace: number;
     /** 최고와 최저의 차이 - 페이스가 얼마나 일정했는지 */
     spread: number;
+    highestHr: number | undefined;
+    averageHr: number | undefined;
 }
 
 /**
@@ -122,6 +125,8 @@ export function segmentSummary(view: SegmentView | null): SegmentSummary | null 
 
     const durationSum = segments.reduce((a, b) => a + b.durationSeconds, 0);
     const distanceSum = segments.reduce((a, b) => a + b.distanceMeters, 0);
+    const highestHr = segments.reduce((a, b) => a > b.heartRate ? a : b.heartRate, 0);
+    const heartRateSum = segments.reduce((a, b) => a + b.heartRate, 0);
 
     if(fastestPace === Infinity || distanceSum <= 0) return null;
 
@@ -131,7 +136,9 @@ export function segmentSummary(view: SegmentView | null): SegmentSummary | null 
         fastestPace: fastestPace,
         slowestPace: slowestPace,
         averagePace: durationSum / distanceSum * 1000,
-        spread: slowestPace - fastestPace
+        spread: slowestPace - fastestPace,
+        highestHr: highestHr,
+        averageHr: Math.round(heartRateSum / view.segments.length),
     };
 
 }

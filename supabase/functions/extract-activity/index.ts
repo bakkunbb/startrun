@@ -15,6 +15,9 @@ const SCHEMA = {
         durationSeconds: {
             type: ['number', 'null']
         },
+        heartRate: {
+            type: ['number', 'null']
+        },
         calories: {
             type: ['number', 'null']
         },
@@ -46,6 +49,9 @@ const SCHEMA = {
                                 },
                                 durationSeconds: {
                                     type: 'number'
+                                },
+                                heartRate: {
+                                    type: 'number'
                                 }
                             },
                             required: ['index', 'distanceMeters', 'durationSeconds'],
@@ -74,6 +80,7 @@ const SYSTEM = `러닝 앱 스크린샷에서 운동 기록을 읽어 JSON으로
 - 거리는 미터, 시간은 초 단위 정수로 변환한다. "10.24 km" → 10240, "52:31" → 3151
 - 화면에 없는 값은 추측하지 말고 null을 넣는다
 - 평균 페이스는 추출하지 않는다. 거리와 시간에서 계산되는 값이다
+- 심박수는 평균 심박수를 기본으로 추출한다. 최고 혹은 최저는 구간표에서 추출 가능하다
 - 날짜에 연도가 없으면 올해로 본다. 시간대는 기기 기준이므로 오프셋 없이 ISO 문자열로 쓴다
 
 구간표(splits/laps)가 보이면 segmentSets에 담는다:

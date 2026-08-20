@@ -34,32 +34,37 @@ export class ActivityLocalDataSource {
     }
 
     async upsert(row: ActivityRow, segmentRows: SegmentRow[]): Promise<void> {
+        try {
         await this.db.transaction(async tx => {
             await tx.execute(
                 `INSERT INTO activities
-                (id, source, started_at, distance_m, duration_s, calories, note, external_id, split_unit_m)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (id, source, started_at, distance_m, duration_s, avg_hr, calories, note, external_id, split_unit_m)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(id) DO UPDATE SET
                 source = excluded.source,
                 started_at = excluded.started_at,
                 distance_m = excluded.distance_m,
                 duration_s = excluded.duration_s,
+                avg_hr = excluded.avg_hr,
                 calories = excluded.calories,
                 note = excluded.note,
                 external_id = excluded.external_id,
                 split_unit_m = excluded.split_unit_m`,
-                [row.id, row.source, row.started_at, row.distance_m, row.duration_s, row.calories, row.note, row.external_id, row.split_unit_m]
+                [row.id, row.source, row.started_at, row.distance_m, row.duration_s, row.avg_hr, row.calories, row.note, row.external_id, row.split_unit_m]
             );
             await tx.execute('DELETE FROM activity_segments WHERE activity_id = ?', [row.id]);
             for (const seg of segmentRows) {
                 await tx.execute(
                     `INSERT INTO activity_segments
-                    (activity_id, kind, idx, distance_m, duration_s)
-                    VALUES (?, ?, ?, ?, ?)`,
-                    [seg.activity_id, seg.kind, seg.idx, seg.distance_m, seg.duration_s]
+                    (activity_id, kind, idx, distance_m, duration_s, hr)
+                    VALUES (?, ?, ?, ?, ?, ?)`,
+                    [seg.activity_id, seg.kind, seg.idx, seg.distance_m, seg.duration_s, seg.hr]
                 );
             }
         });
+    } catch(e) {
+        console.log(e);
+    }
     }
 
     async deleteById(id: string): Promise<void> {

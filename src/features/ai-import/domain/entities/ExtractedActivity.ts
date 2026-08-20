@@ -13,6 +13,7 @@ export type ExtractedActivity = {
     startedAt: Date | null;
     distanceMeters: number | null;
     durationSeconds: number | null;
+    heartRate: number | null;
     calories?: number;
     splits?: Segment[];
     laps?: Segment[];

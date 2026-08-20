@@ -11,6 +11,7 @@ export type ExtractionDto = {
     startedAtIso: string | null;
     distanceMeters: number | null;
     durationSeconds: number | null;
+    heartRate: number | null;
     calories: number | null;
     segmentSets: SegmentSetDto[];
     lowConfidenceFields: string [];

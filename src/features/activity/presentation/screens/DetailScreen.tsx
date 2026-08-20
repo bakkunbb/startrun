@@ -12,7 +12,7 @@ import { useDeleteActivity } from "../hooks/useDeleteActivity";
 import { RootStackParamList } from "@/app/navigation/RootNavigator";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useCallback, useEffect, useLayoutEffect, } from "react";
+import { useCallback, useLayoutEffect, } from "react";
 import { HeaderDeleteButton } from "../components/HeaderDeleteButton";
 
 
@@ -89,18 +89,14 @@ export function DetailScreen({ route }: { route: any }) {
                 <Text>{formatDatetime(activity.startedAt)}</Text>
                 <SourceBadge source={activity.source} />
                 <View>
-                    <View>
-                        <Text>{formatDistanceKm(activity.distanceMeters)}</Text>
-                        <Text>km</Text>
-                    </View>
-                    <View>
-                        <Text>{formatDuration(activity.durationSeconds)}</Text>
-                        <Text>시간</Text>
-                    </View>
-                    <View>
-                        <Text>{formatPace(paceSecPerKm(activity))}</Text>
-                        <Text>/km</Text>
-                    </View>
+                    <Text>거리</Text>
+                    <Text>{formatDistanceKm(activity.distanceMeters)} km</Text>
+                    <Text>시간</Text>
+                    <Text>{formatDuration(activity.durationSeconds)}</Text>
+                    <Text>페이스</Text>
+                    <Text>{formatPace(paceSecPerKm(activity))} /km</Text>
+                    <Text>심박수</Text>
+                    <Text>{activity.heartRate} bpm</Text>
                 </View>
                 <View>
                     <View>

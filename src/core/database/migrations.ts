@@ -25,6 +25,12 @@ export const MIGRATIONS: string[][] = [
             FOREIGN KEY(activity_id) REFERENCES activities(id) ON DELETE CASCADE
         );`
     ],
+    [
+        `ALTER TABLE activities ADD COLUMN avg_hr INTEGER;`,
+    ],
+    [
+        `ALTER TABLE activity_segments ADD COLUMN hr INTEGER;`
+    ]
 ]
 
 /**

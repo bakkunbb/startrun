@@ -17,6 +17,7 @@ export function SegmentTable({ view }: { view: SegmentView }) {
                 <Text style={[styles.cell, styles.value, styles.headText]}>거리</Text>
                 <Text style={[styles.cell, styles.value, styles.headText]}>시간</Text>
                 <Text style={[styles.cell, styles.value, styles.headText]}>페이스</Text>
+                <Text style={[styles.cell, styles.value, styles.headText]}>심박수</Text>
             </View>
             {view.segments.map((s) => {
                 const remainder = isRemainder(view, s.index);
@@ -38,7 +39,10 @@ export function SegmentTable({ view }: { view: SegmentView }) {
                             {formatDuration(s.durationSeconds, true)}
                         </Text>
                         <Text style={[styles.cell, styles.value, ...tone]}>
-                            {formatPace(segmentPaceSecPerKm(s))}
+                            {formatPace(segmentPaceSecPerKm(s))} /km
+                        </Text>
+                        <Text style={[styles.cell, styles.value, ...tone]}>
+                            {s.heartRate} bpm
                         </Text>
                     </View>
                 );

@@ -2,6 +2,7 @@ export type RawSegmentRow = {
     index: number;
     distanceMeters: number;
     durationSeconds: number;
+    heartRate: number;
 };
 
 /** 'ambiguous'는 판단 불가라 원본을 그대로 둔다 */
@@ -78,6 +79,7 @@ export function normalizeSegmentRows(rows: RawSegmentRow[], total: { distanceMet
             index: r.index,
             distanceMeters: fixedDistances[i],
             durationSeconds: fixedDurations[i],
+            heartRate: r.heartRate,
         })),
         distanceReading: distanceReading,
         durationReading: durationReading,

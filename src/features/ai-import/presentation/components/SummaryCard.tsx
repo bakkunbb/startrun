@@ -26,6 +26,11 @@ export function SumamryCard({ activity, review }: { activity: ExtractedActivity;
                 invalid={activity.lowConfidenceFields.includes('durationSeconds')}
                 hint="52:31 또는 1:02:03 형식"
             />
+            <Field
+                label="심박수"
+                value={review.inputs.heartRate} onChangeText={review.setHeartRateInput}
+                keyboardType="number-pad" placeholder="선택"
+            />
             <View>
                 <View style={styles.row}>
                     <Text style={styles.label}>날짜</Text>
