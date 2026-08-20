@@ -1,4 +1,4 @@
-import { ActivityIndicator, Button, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Button, Pressable, StyleSheet, Text, View } from "react-native";
 import { useActivity } from "../hooks/useActivity";
 import { Banner } from "@/core/ui/Banner";
 import { paceSecPerKm, primarySegments } from "../../domain/entities/Activity";
@@ -8,10 +8,44 @@ import { SourceBadge } from "../components/SourceBadge";
 import { SegmentTable } from "../components/SegmentTable";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { NoteEditor } from "../components/NoteEditor";
+import { useDeleteActivity } from "../hooks/useDeleteActivity";
+import { RootStackParamList } from "@/app/navigation/RootNavigator";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useCallback, useEffect, useLayoutEffect, } from "react";
+import { HeaderDeleteButton } from "../components/HeaderDeleteButton";
+
 
 export function DetailScreen({ route }: { route: any }) {
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
     const { id } = route.params;
     const { data: activity, isPending, isError, refetch } = useActivity(id);
+    const deleteActivity = useDeleteActivity();
+
+    const onDelete = useCallback(() => {
+        Alert.alert('기록을 삭제할까요?', '삭제된 기록은 복구할 수 없습니다', [
+            { text: '취소', style: 'cancel' },
+            {
+                text: '삭제',
+                style: 'destructive',
+                onPress: () => {
+                    deleteActivity.mutate(
+                        id,
+                        {
+                            onSuccess: () => navigation.goBack()
+                        }
+                    )
+                }
+            }
+        ])
+    }, [id, navigation, deleteActivity]);
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerRight: () => <HeaderDeleteButton onPress={onDelete} />
+        })
+    }, [navigation, onDelete]);
 
     if (isPending) {
         return (
@@ -81,7 +115,7 @@ export function DetailScreen({ route }: { route: any }) {
             </View>
             <NoteEditor id={id} activityNote={activity.note} />
             <View>
-                <Button title="삭제" />
+                <Button title="삭제" onPress={onDelete} />
             </View>
         </KeyboardAwareScrollView>
     );
