@@ -1,16 +1,16 @@
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Button, Pressable, StyleSheet, Text, View } from "react-native";
 import { useActivity } from "../hooks/useActivity";
 import { Banner } from "@/core/ui/Banner";
 import { paceSecPerKm, primarySegments } from "../../domain/entities/Activity";
 import { segmentSummary } from "../../domain/entities/Segment";
 import { formatDatetime, formatDistanceKm, formatDuration, formatPace } from "@/core/utils/format";
-import React from "react";
 import { SourceBadge } from "../components/SourceBadge";
 import { SegmentTable } from "../components/SegmentTable";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import { NoteEditor } from "../components/NoteEditor";
 
 export function DetailScreen({ route }: { route: any }) {
     const { id } = route.params;
-    console.log(id);
     const { data: activity, isPending, isError, refetch } = useActivity(id);
 
     if (isPending) {
@@ -38,7 +38,6 @@ export function DetailScreen({ route }: { route: any }) {
         )
     }
 
-
     if (activity === null) {
         return (
             <View style={styles.center}>
@@ -51,7 +50,7 @@ export function DetailScreen({ route }: { route: any }) {
     const summary = segmentSummary(view);
 
     return (
-        <ScrollView contentContainerStyle={styles.content}>
+        <KeyboardAwareScrollView contentContainerStyle={styles.content} bottomOffset={24}>
             <View>
                 <Text>{formatDatetime(activity.startedAt)}</Text>
                 <SourceBadge source={activity.source} />
@@ -80,14 +79,11 @@ export function DetailScreen({ route }: { route: any }) {
                 </View>
                 {view ? <SegmentTable view={view} /> : null}
             </View>
-            <Text>메모</Text>
-            <Text>{activity.note}</Text>
-            <Text>{summary?.count}</Text>
-            <Text>{summary?.measuredCount}</Text>
-            <Text>{summary?.fastestPace}</Text>
-            <Text>{summary?.slowestPace}</Text>
-            <Text>{summary?.spread}</Text>
-        </ScrollView >
+            <NoteEditor id={id} activityNote={activity.note} />
+            <View>
+                <Button title="삭제" />
+            </View>
+        </KeyboardAwareScrollView>
     );
 }
 

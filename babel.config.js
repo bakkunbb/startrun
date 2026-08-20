@@ -6,5 +6,6 @@ module.exports = {
       alias: { '@': './src' },
       extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     }],
+    'react-native-reanimated/plugin',
   ],
 };
