@@ -19,16 +19,12 @@ export function formatDuration(seconds: number, forTable: boolean = false): stri
     const s = seconds % 60;
 
     const [whole, decimal] = s.toFixed(1).split('.');
-    // const secString = decimal === '0' ? whole.padStart(2, '0') : `${whole.padStart(2, '0')}.${decimal}`;
     const secString = !forTable ? whole.padStart(2, '0') : `${whole.padStart(2, '0')}.${decimal}`;
-    // const secString =  `${whole.padStart(2, '0')}.${decimal === undefined ? '0': decimal}`;
 
     if (h > 0) {
-        // return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
         return `${h}:${String(m).padStart(2, '0')}:${secString}`;
     }
 
-    // return `${m}:${String(s).padStart(2, '0')}`;
     return `${m}:${secString}`;
 }
 
