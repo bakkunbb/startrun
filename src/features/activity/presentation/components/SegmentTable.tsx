@@ -35,7 +35,7 @@ export function SegmentTable({ view }: { view: SegmentView }) {
                             {distance}
                         </Text>
                         <Text style={[styles.cell, styles.value, ...tone]}>
-                            {formatDuration(s.durationSeconds)}
+                            {formatDuration(s.durationSeconds, true)}
                         </Text>
                         <Text style={[styles.cell, styles.value, ...tone]}>
                             {formatPace(segmentPaceSecPerKm(s))}
