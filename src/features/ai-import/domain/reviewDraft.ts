@@ -5,6 +5,7 @@ export type ReviewDraft = {
     startedAt: Date | null;
     distanceMeters: number | null;
     durationSeconds: number | null;
+    heartRate?: number;
     calories?: number;
     note?: string;
     splits?: Segment[];
@@ -55,6 +56,7 @@ export function toActivity(draft: ReviewDraft, id: string): Activity {
         startedAt: draft.startedAt!,
         distanceMeters: draft.distanceMeters!,
         durationSeconds: draft.durationSeconds!,
+        heartRate: draft.heartRate!,
         calories: draft.calories,
         note: draft.note,
         splits: draft.splits,

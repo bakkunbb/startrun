@@ -1,5 +1,5 @@
 import {
-  parseCalories,
+  parsePureNum,
   parseDistanceKm,
   parseDuration,
 } from '@/features/ai-import/domain/parseInput';
@@ -54,16 +54,16 @@ describe('parseDuration', () => {
 
 describe('parseCalories', () => {
   it('정수를 읽는다', () => {
-    expect(parseCalories('642')).toBe(642);
+    expect(parsePureNum('642')).toBe(642);
   });
 
   it('빈 문자열은 값 없음이지 오류가 아니다', () => {
-    expect(parseCalories('')).toBeUndefined();
+    expect(parsePureNum('')).toBeUndefined();
   });
 
   it('형식이 아니면 null', () => {
-    expect(parseCalories('abc')).toBeNull();
-    expect(parseCalories('-1')).toBeNull();
+    expect(parsePureNum('abc')).toBeNull();
+    expect(parsePureNum('-1')).toBeNull();
   });
 });
 

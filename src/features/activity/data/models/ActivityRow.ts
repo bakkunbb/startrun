@@ -7,6 +7,7 @@ export interface ActivityRow {
     started_at: number;       // epoch millis
     distance_m: number;
     duration_s: number;
+    avg_hr: number | null;
     calories: number | null;
     note: string | null;
     external_id: string | null;
@@ -21,6 +22,7 @@ export function toEntity(row: ActivityRow, segments?: { splits?: Segment[]; laps
         startedAt: new Date(row.started_at),
         distanceMeters: row.distance_m,
         durationSeconds: row.duration_s,
+        heartRate: row.avg_hr ?? undefined,
         calories: row.calories ?? undefined,
         note: row.note ?? undefined,
         externalId: row.external_id ?? undefined,
@@ -36,6 +38,7 @@ export function toRow(activity: Activity): ActivityRow {
         source: activity.source,
         started_at: activity.startedAt.getTime(),
         distance_m: activity.distanceMeters,
+        avg_hr: activity.heartRate ?? null,
         duration_s: activity.durationSeconds,
         calories: activity.calories ?? null,
         note: activity.note ?? null,

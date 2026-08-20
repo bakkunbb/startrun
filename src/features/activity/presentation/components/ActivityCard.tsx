@@ -10,6 +10,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 export default function ActivityCard({ activity }: { activity: Activity }) {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const isHeartRateExist = activity.heartRate !== undefined;
 
     return (
         <View style={styles.card}>
@@ -26,6 +27,9 @@ export default function ActivityCard({ activity }: { activity: Activity }) {
                     {' • '}
                     {formatDuration(activity.durationSeconds)}
                     {' • '}
+                    {
+                        isHeartRateExist ? `${activity.heartRate ?? 0}bpm  • ` : null
+                    }
                     {`${formatPace(paceSecPerKm(activity))}/km`}
                     {' • '}
                     {`구간 ${primarySegments(activity as SegmentBearing)?.segments.length ?? '없음'}`}

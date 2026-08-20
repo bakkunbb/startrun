@@ -14,6 +14,7 @@ export interface Activity {
     startedAt: Date;
     distanceMeters: number;
     durationSeconds: number;
+    heartRate?: number;
     calories?: number;
     note?: string;
     externalId?: string;

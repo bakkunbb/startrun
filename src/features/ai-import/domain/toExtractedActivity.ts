@@ -123,6 +123,7 @@ export function toExtractedActivity(dto: ExtractionDto): ExtractedActivity {
         startedAt: date,
         distanceMeters: dto.distanceMeters ?? null,
         durationSeconds: dto.durationSeconds ?? null,
+        heartRate: dto.heartRate ?? null,
         calories: dto.calories ?? undefined,
         splits,
         laps,
