@@ -1,3 +1,4 @@
+import { colors } from "@/app/theme";
 import { Pressable, StyleSheet, Text } from "react-native";
 
 export function HeaderDeleteButton({ onPress }: { onPress: () => void }) {
