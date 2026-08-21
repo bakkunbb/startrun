@@ -4,6 +4,7 @@ import { ExtractedActivity } from "../../domain/entities/ExtractedActivity";
 import { useReviewDraft } from "../hooks/useReviewDraft";
 import { useState } from "react";
 import { DateTimeField } from "./DateTimeField";
+import { colors } from "@/app/theme";
 
 export function SumamryCard({ activity, review }: { activity: ExtractedActivity; review: ReturnType<typeof useReviewDraft>; }) {
 
@@ -50,7 +51,7 @@ export function SumamryCard({ activity, review }: { activity: ExtractedActivity;
 
 const cardStyles = StyleSheet.create({
     card: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: colors.card,
         borderRadius: 12,
         padding: 16,
         marginHorizontal: 16,

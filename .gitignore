@@ -87,3 +87,5 @@ supabase/.temp/
 .env
 
 /scripts
+
+.guide/

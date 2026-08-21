@@ -21,6 +21,6 @@ const styles = StyleSheet.create({
     },
     headerButtonText: {
         fontSize: 16,
-        color: '#D14343',
+        color: colors.danger,
     },
 });
