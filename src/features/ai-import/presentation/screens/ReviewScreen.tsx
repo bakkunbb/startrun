@@ -14,6 +14,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { useDuplicateCheck } from "../hooks/useDuplicateCheck";
 import { formatDistanceKm, formatMonthDay } from "@/core/utils/format";
+import { colors } from "@/app/theme";
 
 const WARNING_MESSAGES: Record<ExtractionWarning, string> = {
     missing_started_at: '날짜를 읽지 못했습니다. 직접 입력해주세요.',
@@ -105,7 +106,7 @@ export default function ReviewScreen({ route }: { route: any }) {
                 >
                     {saveImported.isPending
                         ? (
-                            <ActivityIndicator color="#FFFFFF" />
+                            <ActivityIndicator color={colors.card} />
                         )
                         : (
                             <Text style={styles.saveText}>저장</Text>
@@ -124,24 +125,24 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingTop: 12,
         borderTopWidth: StyleSheet.hairlineWidth,
-        borderTopColor: '#E5E7EB',
-        backgroundColor: '#FFFFFF',
+        borderTopColor: colors.border,
+        backgroundColor: colors.card,
     },
     saveButton: {
         height: 52,
         borderRadius: 12,
-        backgroundColor: '#1D4ED8',
+        backgroundColor: colors.accent,
         alignItems: 'center',
         justifyContent: 'center',
     },
     pressed: {
-        backgroundColor: '#1A43B8',
+        backgroundColor: colors.accentPressed,
     },
     saveButtonOff: {
-        backgroundColor: '#C7D2E4',
+        backgroundColor: colors.accentDisabled,
     },
     saveText: {
-        color: '#FFFFFF',
+        color: colors.textInverse,
         fontSize: 17,
         fontWeight: '600',
     },

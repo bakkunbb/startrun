@@ -1,6 +1,7 @@
 import { formatDistanceKm, formatDuration, formatPace } from "@/core/utils/format";
 import { fastestSegment, isRemainder, segmentPaceSecPerKm, SegmentView } from "../../domain/entities/Segment";
 import { StyleSheet, Text, View } from "react-native";
+import { colors } from "@/app/theme";
 
 export function SegmentTable({ view }: { view: SegmentView }) {
     const fastest = fastestSegment(view);
@@ -53,25 +54,25 @@ export function SegmentTable({ view }: { view: SegmentView }) {
 
 const styles = StyleSheet.create({
     wrap: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: colors.card,
         borderRadius: 12,
         padding: 16,
         marginHorizontal: 16,
         marginTop: 12,
     },
-    title: { fontSize: 14, fontWeight: '600', color: '#374151', marginBottom: 8 },
+    title: { fontSize: 14, fontWeight: '600', color: colors.text, marginBottom: 8 },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
         minHeight: 32,
         borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: '#F3F4F6',
+        borderBottomColor: colors.bgSubtle,
     },
-    head: { borderBottomColor: '#E5E7EB' },
-    headText: { fontSize: 12, color: '#9CA3AF', fontWeight: '500' },
-    cell: { fontSize: 14, color: '#111827', fontVariant: ['tabular-nums'] },
+    head: { borderBottomColor: colors.border },
+    headText: { fontSize: 12, color: colors.textDisabled, fontWeight: '500' },
+    cell: { fontSize: 14, color: colors.text, fontVariant: ['tabular-nums'] },
     num: { width: 32 },
     value: { flex: 1, textAlign: 'right' },
-    dim: { color: '#9CA3AF' },
-    best: { fontWeight: '700', color: '#1D4ED8' },
+    dim: { color: colors.textDisabled },
+    best: { fontWeight: '700', color: colors.accent },
 });

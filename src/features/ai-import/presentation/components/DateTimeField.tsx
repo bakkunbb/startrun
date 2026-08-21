@@ -1,3 +1,4 @@
+import { colors } from "@/app/theme";
 import { formatDatetime } from "@/core/utils/format";
 import RNDateTimePicker, { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { useState } from "react";
@@ -83,20 +84,20 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 10,
         borderWidth: 1,
-        borderColor: '#E5E7EB',
+        borderColor: colors.border,
         borderRadius: 8,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: colors.card,
     },
     valueText: {
         fontSize: 17,
-        color: '#111827',
+        color: colors.text,
     },
     uncertain: {
-        borderColor: '#D98B00',
-        backgroundColor: '#FFF7E6',
+        borderColor: colors.warning,
+        backgroundColor: colors.warningSubtle,
     },
     pressed: {
-        backgroundColor: '#F3F4F6',
+        backgroundColor: colors.bgSubtle,
     },
     unit: {
         width: 32,

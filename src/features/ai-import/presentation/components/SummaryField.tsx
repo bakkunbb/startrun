@@ -1,3 +1,4 @@
+import { colors } from '@/app/theme';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import type { KeyboardTypeOptions } from 'react-native';
 
@@ -60,25 +61,25 @@ const styles = StyleSheet.create({
     input: {
         flex: 1,
         fontSize: 17,
-        color: '#111827',
+        color: colors.text,
         paddingVertical: 8,
         paddingHorizontal: 10,
         borderWidth: 1,
-        borderColor: '#E5E7EB',
+        borderColor: colors.border,
         borderRadius: 8,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: colors.card,
     },
     multiline: {
         minHeight: 72,
         paddingTop: 8,
     },
     uncertain: {
-        borderColor: '#D98B00',
-        backgroundColor: '#FFF7E6',
+        borderColor: colors.warning,
+        backgroundColor: colors.warningSubtle,
     },
     invalid: {
-        borderColor: '#D14343',
-        backgroundColor: '#FEECEC',
+        borderColor: colors.danger,
+        backgroundColor: colors.dangerSubtle,
     },
     unit: {
         width: 32,
@@ -89,6 +90,6 @@ const styles = StyleSheet.create({
         marginLeft: 64,   // label(56) + gap(8)
         marginBottom: 6,
         fontSize: 12,
-        color: '#D14343',
+        color: colors.danger,
     },
 });

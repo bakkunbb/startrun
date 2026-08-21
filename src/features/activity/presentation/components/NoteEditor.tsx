@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useUpdateNote } from "../hooks/useUpdateNote";
 import { Alert, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { colors } from "@/app/theme";
 
 export function NoteEditor({ id, activityNote }: { id: string; activityNote: string | undefined }) {
     const updateNote = useUpdateNote();
@@ -68,11 +69,11 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#1D4ED8',
+        backgroundColor: colors.accent,
     },
-    noteButtonDone: { backgroundColor: '#0F9D58' },
-    noteButtonOff: { backgroundColor: '#F3F4F6' },
+    noteButtonDone: { backgroundColor: colors.success },
+    noteButtonOff: { backgroundColor: colors.bgSubtle },
     pressed: { opacity: 0.85 },
-    noteButtonText: { fontSize: 15, fontWeight: '600', color: '#FFFFFF' },
-    noteButtonTextOff: { color: '#9CA3AF' },
+    noteButtonText: { fontSize: 15, fontWeight: '600', color: colors.textInverse },
+    noteButtonTextOff: { color: colors.textDisabled },
 });

@@ -14,6 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useCallback, useLayoutEffect, } from "react";
 import { HeaderDeleteButton } from "../components/HeaderDeleteButton";
+import { colors } from "@/app/theme";
 
 
 export function DetailScreen({ route }: { route: any }) {
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: '#D1D5DB',
+        borderColor: colors.border,
     },
-    retryText: { fontSize: 15, color: '#374151' },
+    retryText: { fontSize: 15, color: colors.text },
 });
