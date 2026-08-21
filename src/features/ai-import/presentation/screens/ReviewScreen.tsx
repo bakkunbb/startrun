@@ -1,149 +1,73 @@
-import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, Pressable, PressableStateCallbackType, ScrollView, StyleSheet, Text, View } from "react-native";
-import { ExtractionWarning } from "../../domain/entities/ExtractedActivity";
-import { useReviewDraft } from "../hooks/useReviewDraft";
-import { useMemo } from "react";
-import { toExtractedActivity } from "../../domain/toExtractedActivity";
-import { Banner } from "@/core/ui/Banner";
-import { primarySegments } from "@/features/activity/domain/entities/Activity";
-import { SegmentTable } from "@/features/activity/presentation/components/SegmentTable";
-import { SumamryCard } from "../components/SummaryCard";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useSaveImported } from "../hooks/useSaveImported";
+import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
 import { RootStackParamList } from "@/app/navigation/RootNavigator";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
-import { useDuplicateCheck } from "../hooks/useDuplicateCheck";
-import { formatDistanceKm, formatMonthDay } from "@/core/utils/format";
-import { colors } from "@/app/theme";
+import { useNavigation, usePreventRemove } from "@react-navigation/native";
+import { useImportStore } from "../stores/importStore";
+import { useExtractActivity } from "../hooks/useExtractActivity";
+import { ReviewForm } from "../components/ReviewForm";
 
-const WARNING_MESSAGES: Record<ExtractionWarning, string> = {
-    missing_started_at: '날짜를 읽지 못했습니다. 직접 입력해주세요.',
-    invalid_started_at: '날짜 형식을 확인해주세요.',
-    missing_distance: '거리를 읽지 못했습니다. 직접 입력해주세요.',
-    missing_duration: '시간을 읽지 못했습니다. 직접 입력해주세요.',
-    segments_unverified: '구간 기록이 총 거리와 맞지 않습니다.',
-    unknown_segment_kind: '구간 종류를 판단하지 못해 랩으로 표시했습니다.',
-};
-
-export default function ReviewScreen({ route }: { route: any }) {
+export default function ReviewScreen() {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-    const insets = useSafeAreaInsets();
 
-    const { dto } = route.params;
-    const extracted = useMemo(() => toExtractedActivity(dto), [dto]);
-    const review = useReviewDraft(extracted);
-    const draft = review.draft;
+    const images = useImportStore((s) => s.images);
+    const clear = useImportStore((s) => s.clear);
 
-    const view = primarySegments(review.draft);
+    const extract = useExtractActivity();
+    const { mutate } = extract;
 
-    const saveImported = useSaveImported();
-    const { data: duplicates = [] } = useDuplicateCheck(review.draft.startedAt);
+    useEffect(() => {
+        if (images.length > 0) mutate(images);
+    }, [images, mutate]);
 
-    const disabled = !review.canSave || saveImported.isPending;
-
-    const doSave = (id?: string) => {
-        saveImported.mutate(
-            { draft, id },
-            {
-                onSuccess: () => navigation.popToTop(),
-                onError: (_) => {
-                    Alert.alert('저장하지 못했습니다', '잠시 후 다시 시도해주세요.');
-                }
-            }
-        )
-    };
-
-    const onSave = async () => {
-        if (!review.canSave || saveImported.isPending) return;
-
-        if (duplicates.length === 0) {
-            doSave();
-            return;
-        }
-
-        const exsisting = duplicates[0];
-        Alert.alert(
-            '비슷한 시각의 기록이 있습니다.',
-            `${formatMonthDay(exsisting.startedAt)} · ${formatDistanceKm(exsisting.distanceMeters)} km`,
-            [
-                { text: '취소', style: 'cancel' },
-                { text: '새로 저장', onPress: () => doSave() },
-                { text: '덮어쓰기', style: 'destructive', onPress: () => doSave(exsisting.id) }
-            ]
-        )
+    const [canLeave, setCanLeave] = useState(false);
+    const onLeave = () => {
+        clear();
+        setCanLeave(true);
     }
 
-    return (
-        <KeyboardAvoidingView
-            style={styles.flex}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-            <ScrollView
-                style={styles.flex}
-                contentContainerStyle={styles.content}
-                keyboardShouldPersistTaps="handled"
-                keyboardDismissMode="on-drag">
-                <View>
-                    {extracted.warnings?.length > 0 ? (
-                        <Banner
-                            tone="warning"
-                            title="확인이 필요합니다"
-                            lines={extracted.warnings.map((w) => WARNING_MESSAGES[w])}
-                        />
-                    ) : null}
-                    <SumamryCard activity={extracted} review={review} />
-                    {view ? <SegmentTable view={view} /> : null}
-                </View >
-            </ScrollView>
-            <View style={[styles.bar, { paddingBottom: insets.bottom + 12 }]}>
-                <Pressable
-                    style={({ pressed }: PressableStateCallbackType) => [
-                        styles.saveButton,
-                        pressed && styles.pressed,
-                        disabled && styles.saveButtonOff,
-                    ]}
-                    disabled={disabled}
-                    onPress={onSave}
-                >
-                    {saveImported.isPending
-                        ? (
-                            <ActivityIndicator color={colors.card} />
-                        )
-                        : (
-                            <Text style={styles.saveText}>저장</Text>
-                        )
-                    }
+    usePreventRemove(!canLeave, ({ data }) => {
+        Alert.alert('작성 중인 내용이 사라집니다', '검토를 그만둘까요?', [
+            { text: '계속 작성', style: 'cancel' },
+            {
+                text: '나가기', style: 'destructive', onPress: () => {
+                    clear();
+                    navigation.dispatch(data.action);
+                }
+            },
+        ]);
+    })
+
+    if (extract.isError) {
+        return (
+            <View style={styles.center}>
+                <Text>결과를 불러오지 못했습니다.</Text>
+                <Pressable onPress={() => extract.mutate(images)}>
+                    <Text>다시 시도</Text>
+                </Pressable>
+                <Pressable onPress={() => navigation.goBack()}>
+                    <Text>다른 사진 고르기</Text>
                 </Pressable>
             </View>
-        </KeyboardAvoidingView>
-    );
+        );
+    }
+
+    if (!extract.data) {
+        return (
+            <View style={styles.center}>
+                <ActivityIndicator size="large" />
+            </View>
+        );
+    }
+
+    return <ReviewForm dto={extract.data} onLeave={onLeave} />;
 }
 
 const styles = StyleSheet.create({
-    flex: { flex: 1 },
-    content: { paddingTop: 16, paddingBottom: 32, gap: 12 },
-    bar: {
-        paddingHorizontal: 16,
-        paddingTop: 12,
-        borderTopWidth: StyleSheet.hairlineWidth,
-        borderTopColor: colors.border,
-        backgroundColor: colors.card,
-    },
-    saveButton: {
-        height: 52,
-        borderRadius: 12,
-        backgroundColor: colors.accent,
+    center: {
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-    },
-    pressed: {
-        backgroundColor: colors.accentPressed,
-    },
-    saveButtonOff: {
-        backgroundColor: colors.accentDisabled,
-    },
-    saveText: {
-        color: colors.textInverse,
-        fontSize: 17,
-        fontWeight: '600',
+        gap: 12
     },
 });

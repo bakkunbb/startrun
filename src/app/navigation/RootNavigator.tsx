@@ -1,15 +1,15 @@
 import { ActivityListScreen } from "@/features/activity/presentation/screens/ActivityListScreen";
 import { DetailScreen } from "@/features/activity/presentation/screens/DetailScreen";
-import { ExtractionDto } from "@/features/ai-import/data/models/ExtractionDto";
-import ImportScreen from "@/features/ai-import/presentation/screens/ImportScreen";
+// import { ExtractionDto } from "@/features/ai-import/data/models/ExtractionDto";
+// import ImportScreen from "@/features/ai-import/presentation/screens/ImportScreen";
 import ReviewScreen from "@/features/ai-import/presentation/screens/ReviewScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 export type RootStackParamList = {
     ActivityList: undefined;
-    Import: undefined;
-    Review: { dto: ExtractionDto };
+    // Import: undefined;
+    Review: undefined;
     Detail: { id: string };
 };
 
@@ -24,11 +24,11 @@ export function RootNavigator() {
                     component={ActivityListScreen}
                     options={{ title: '기록' }}
                 />
-                <Stack.Screen
+                {/* <Stack.Screen
                     name="Import"
                     component={ImportScreen}
                     options={{ title: '기록 가져오기' }}
-                />
+                /> */}
                 <Stack.Screen
                     name="Review"
                     component={ReviewScreen}
