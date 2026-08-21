@@ -1,10 +1,10 @@
 import { PickedImage } from "@/core/media/imagePicker";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
-import { requestExtraction } from "../../data/datasources/aiExtractionApi";
+import { ExtractionError, requestExtraction } from "../../data/datasources/aiExtractionApi";
 import { ExtractionDto } from "../../data/models/ExtractionDto";
 
-export function useExtractActivity(): UseMutationResult<ExtractionDto, Error, PickedImage[]> {
-    const mutate = useMutation({
+export function useExtractActivity(): UseMutationResult<ExtractionDto, ExtractionError, PickedImage[]> {
+    const mutate = useMutation<ExtractionDto, ExtractionError, PickedImage[]>({
         mutationFn: async (images: PickedImage[]) => requestExtraction(images),
     });
 

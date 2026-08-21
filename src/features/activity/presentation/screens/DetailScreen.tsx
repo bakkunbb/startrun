@@ -1,6 +1,5 @@
-import { ActivityIndicator, Alert, Button, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Button, StyleSheet, Text, View } from "react-native";
 import { useActivity } from "../hooks/useActivity";
-import { Banner } from "@/core/ui/Banner";
 import { paceSecPerKm, primarySegments } from "../../domain/entities/Activity";
 import { segmentSummary } from "../../domain/entities/Segment";
 import { formatDatetime, formatDistanceKm, formatDuration, formatPace } from "@/core/utils/format";
@@ -14,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useCallback, useLayoutEffect, } from "react";
 import { HeaderDeleteButton } from "../components/HeaderDeleteButton";
-import { colors } from "@/app/theme";
+import { EmptyState } from "@/core/ui/EmptyState";
 
 
 export function DetailScreen({ route }: { route: any }) {
@@ -58,26 +57,22 @@ export function DetailScreen({ route }: { route: any }) {
 
     if (isError) {
         return (
-            <View style={styles.center}>
-                <Banner
-                    tone="danger"
-                    title="기록을 불러오지 못했습니다"
-                />
-                <Pressable
-                    style={styles.retry}
-                    onPress={() => refetch()}
-                >
-                    <Text style={styles.retryText}>다시 시도</Text>
-                </Pressable>
-            </View>
+            <EmptyState
+                title="불러오지 못했어요"
+                actionLabel="다시 시도"
+                onAction={() => refetch()}
+            />
         )
     }
 
     if (activity === null) {
         return (
-            <View style={styles.center}>
-                <Text style={styles.empty}>기록을 찾을 수 없습니다</Text>
-            </View>
+            <EmptyState
+                title="기록을 찾을 수 없어요"
+                description="삭제되었거나 잘못된 접근입니다"
+                actionLabel="목록으로"
+                onAction={() => navigation.popToTop()}
+            />
         )
     }
 
@@ -127,13 +122,4 @@ const styles = StyleSheet.create({
         gap: 12,
     },
     content: { paddingVertical: 16, gap: 12 },
-    empty: { fontSize: 15, color: colors.textMuted },
-    retry: {
-        paddingHorizontal: 16,
-        paddingVertical: 10,
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: colors.border,
-    },
-    retryText: { fontSize: 15, color: colors.text },
 });

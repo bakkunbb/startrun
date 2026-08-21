@@ -1,7 +1,6 @@
 import { useActivities } from "../hooks/useActivities";
 import ActivityCard from "../components/ActivityCard";
-import { Button, FlatList, StyleSheet, Text, View } from "react-native";
-import { useAddSampleActivity } from "../hooks/useAddSampleActivity";
+import { FlatList, StyleSheet, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "@/app/navigation/RootNavigator";
@@ -9,10 +8,11 @@ import { useCallback, useLayoutEffect } from "react";
 import { HeaderAddButton } from "../components/HeaderAddButton";
 import { pickScreenShots } from "@/core/media/imagePicker";
 import { useImportStore } from "@/features/ai-import/presentation/stores/importStore";
+import { EmptyState } from "@/core/ui/EmptyState";
+import { colors, radius, spacing } from "@/app/theme";
 
 export function ActivityListScreen() {
-    const { data, isPending, error, } = useActivities();
-    const addSampleActivity = useAddSampleActivity();
+    const { data, isPending, error, refetch } = useActivities();
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const setImages = useImportStore((s) => s.setImages);
 
@@ -29,15 +29,39 @@ export function ActivityListScreen() {
         });
     }, [navigation, onAdd]);
 
-    if (isPending) return <Text>Loading...</Text>
-    if (error) return <Text>Error: {error.message}</Text>
-    if (!data || data.length === 0)
+    if (isPending) {
         return (
             <View>
-                <Button title="add"
-                    onPress={() => addSampleActivity.mutate()} />
+                {[0, 1, 2].map((i) => (
+                    <View key={i} style={styles.cardSkeleton}>
+                        <View style={styles.skeletonBarWide} />
+                        <View style={styles.skeletonBarNarrow} />
+                    </View>
+                ))}
             </View>
         );
+    }
+
+    if (error) {
+        return (
+            <EmptyState
+                title="불러오지 못했습니다"
+                actionLabel="다시 시도"
+                onAction={() => refetch()}
+            />
+        );
+    }
+
+    if (!data || data.length === 0) {
+        return (
+            <EmptyState
+                title="첫 기록을 추가해보세요"
+                description="러닝 앱 스크린샷을 불러오면 자동으로 채워집니다"
+                actionLabel="스크린샷 불러오기"
+                onAction={onAdd}
+            />
+        );
+    }
 
     return (
         <View style={styles.flex}>
@@ -52,4 +76,24 @@ export function ActivityListScreen() {
 
 const styles = StyleSheet.create({
     flex: { flex: 1 },
+    cardSkeleton: {
+        backgroundColor: colors.card,
+        padding: spacing.md,
+        marginHorizontal: spacing.md,
+        marginVertical: spacing.sm,
+        borderRadius: radius.md,
+        gap: spacing.sm,
+    },
+    skeletonBarWide: {
+        height: 20,
+        width: '40%',
+        borderRadius: radius.sm,
+        backgroundColor: colors.bgSubtle,
+    },
+    skeletonBarNarrow: {
+        height: 14,
+        width: '70%',
+        borderRadius: radius.sm,
+        backgroundColor: colors.bgSubtle,
+    },
 });
