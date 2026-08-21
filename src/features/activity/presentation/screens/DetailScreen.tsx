@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
         gap: 12,
     },
     content: { paddingVertical: 16, gap: 12 },
-    empty: { fontSize: 15, color: '#6B7280' },
+    empty: { fontSize: 15, color: colors.textMuted },
     retry: {
         paddingHorizontal: 16,
         paddingVertical: 10,

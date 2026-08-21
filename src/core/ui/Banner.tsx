@@ -25,7 +25,7 @@ export function Banner({ tone = 'warning', title, lines, children }: Props) {
 
 const styles = StyleSheet.create({
     base: { borderRadius: 12, borderLeftWidth: 3, padding: 16, gap: 4, marginBottom: 12, marginHorizontal: 16 },
-    info: { backgroundColor: colors.accentSubtle, borderLeftColor: '#3B6FD4' },
+    info: { backgroundColor: colors.accentSubtle, borderLeftColor: colors.accent },
     warning: { backgroundColor: colors.warningSubtle, borderLeftColor: colors.warning },
     danger: { backgroundColor: colors.dangerSubtle, borderLeftColor: colors.danger },
     title: { fontWeight: '600' },

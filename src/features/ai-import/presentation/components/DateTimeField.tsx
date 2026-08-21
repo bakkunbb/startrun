@@ -54,7 +54,7 @@ export function DateTimeField({ label, value, onChange, uncertain }: Props) {
                 <RNDateTimePicker
                     value={value}
                     mode="datetime"
-                    textColor="#000000"
+                    textColor={colors.text}
                     display="spinner"
                     locale="ko-KR"
                     onValueChange={(_, date) => {
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     label: {
         width: 56,
         fontSize: 14,
-        color: '#6B7280',
+        color: colors.textMuted,
     },
     value: {
         flex: 1,

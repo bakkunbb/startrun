@@ -34,7 +34,7 @@ export function Field({
                     onChangeText={onChangeText}
                     keyboardType={keyboardType}
                     placeholder={placeholder}
-                    placeholderTextColor="#9CA3AF"
+                    placeholderTextColor={colors.textDisabled}
                     multiline={multiline}
                     selectTextOnFocus={!multiline}
                     textAlignVertical={multiline ? 'top' : 'center'}
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     label: {
         width: 56,
         fontSize: 14,
-        color: '#6B7280',
+        color: colors.textMuted,
     },
     input: {
         flex: 1,
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     unit: {
         width: 32,
         fontSize: 14,
-        color: '#6B7280',
+        color: colors.textMuted,
     },
     hint: {
         marginLeft: 64,   // label(56) + gap(8)

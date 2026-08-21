@@ -11,14 +11,14 @@ export const colors = {
   // 배경
   bg: '#f7f7f5',
   /** 눌림·비활성 배경 */
-  bgSubtle: '#efefec',
+  bgSubtle: '#f1efe8',
   card: '#ffffff',
 
   // 글자
   text: '#1f1f1d',
-  textMuted: '#6b7280',
+  textMuted: '#5f5e5a',
   /** 자투리 구간, 비활성 버튼 글자 */
-  textDisabled: '#a1a19b',
+  textDisabled: '#888780',
   /** 색 배경 위 */
   textInverse: '#ffffff',
 
@@ -28,18 +28,26 @@ export const colors = {
   divider: 'rgba(0,0,0,0.06)',
 
   // 강조
-  accent: '#1c64f2',
-  accentPressed: '#1750c4',
-  accentDisabled: '#b9cdf7',
+  accent: '#185fa5',
+  accentPressed: '#134d86',
+  accentDisabled: '#b7cde3',
   /** 정보 배너 배경 */
-  accentSubtle: '#eef3fe',
+  accentSubtle: '#e6f1fb',
 
   // 상태
-  warning: '#a36a00',
-  warningSubtle: '#fdf4e3',
+  warning: '#854f0b',
+  warningSubtle: '#faeeda',
   danger: '#a32d2d',
   dangerSubtle: '#fbeceb',
-  success: '#2f7d4f',
+  success: '#3b6d11',
+  successSubtle: '#eaf3de',
+
+  // 그 외
+  /** SourceBadge의 건강 앱 배지 */
+  health: '#993556',
+  healthSubtle: '#fbeaf0',
+  /** 카드 그림자 */
+  shadow: '#000000',
 };
 
 export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 };
