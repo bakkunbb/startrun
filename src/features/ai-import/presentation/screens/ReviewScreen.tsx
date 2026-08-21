@@ -113,9 +113,6 @@ export default function ReviewScreen({ route }: { route: any }) {
                     }
                 </Pressable>
             </View>
-            {/* <View style={[styles.bar, { paddingBottom: insets.bottom + 12 }]}>
-                <Button title="저장" disabled={!review.canSave} onPress={onSave} />
-            </View> */}
         </KeyboardAvoidingView>
     );
 }

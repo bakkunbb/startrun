@@ -1,14 +1,13 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Field } from "./SummaryField";
 import { ExtractedActivity } from "../../domain/entities/ExtractedActivity";
 import { useReviewDraft } from "../hooks/useReviewDraft";
 import { useState } from "react";
-import DatePicker from "react-native-date-picker";
+import { DateTimeField } from "./DateTimeField";
 
 export function SumamryCard({ activity, review }: { activity: ExtractedActivity; review: ReturnType<typeof useReviewDraft>; }) {
 
     const [date, setDate] = useState(review.draft.startedAt ?? new Date())
-    const [open, setOpen] = useState(false)
 
     return (
         <View style={cardStyles.card}>
@@ -31,30 +30,14 @@ export function SumamryCard({ activity, review }: { activity: ExtractedActivity;
                 value={review.inputs.heartRate} onChangeText={review.setHeartRateInput}
                 keyboardType="number-pad" placeholder="선택"
             />
-            <View>
-                <View style={styles.row}>
-                    <Text style={styles.label}>날짜</Text>
-                    <Pressable
-                        onPress={() => {
-                            setOpen(true);
-                        }}>
-                        <Text>{review.draft.startedAt?.toDateString()}</Text>
-                        <DatePicker
-                            modal
-                            open={open}
-                            date={date}
-                            onConfirm={(selected) => {
-                                setOpen(false);
-                                setDate(selected);
-                                review.setStartedAt(selected);
-                            }}
-                            onCancel={() => {
-                                setOpen(false)
-                            }}
-                        />
-                    </Pressable>
-                </View>
-            </View>
+            <DateTimeField
+                label="날짜"
+                value={date}
+                onChange={(selected) => {
+                    setDate(selected);
+                    review.setStartedAt(selected)
+                }}
+            />
             <Field
                 label="칼로리" unit="kcal"
                 value={review.inputs.calories} onChangeText={review.setCaloriesInput}
@@ -71,19 +54,5 @@ const cardStyles = StyleSheet.create({
         borderRadius: 12,
         padding: 16,
         marginHorizontal: 16,
-    },
-});
-
-const styles = StyleSheet.create({
-    row: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        minHeight: 48,
-        gap: 8,
-    },
-    label: {
-        width: 56,
-        fontSize: 14,
-        color: '#6B7280',
     },
 });
