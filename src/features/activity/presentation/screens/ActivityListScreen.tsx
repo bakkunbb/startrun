@@ -10,6 +10,8 @@ import { pickScreenShots } from "@/core/media/imagePicker";
 import { useImportStore } from "@/features/ai-import/presentation/stores/importStore";
 import { EmptyState } from "@/core/ui/EmptyState";
 import { colors, radius, spacing } from "@/app/theme";
+import { summarize, thisWeek } from "../../domain/periodSummary";
+import { WeeklySummaryStrip } from "../components/WeeklySummaryStrip";
 
 export function ActivityListScreen() {
     const { data, isPending, error, refetch } = useActivities();
@@ -63,12 +65,15 @@ export function ActivityListScreen() {
         );
     }
 
+    const weekly = summarize(thisWeek(data));
+
     return (
         <View style={styles.flex}>
             <FlatList
                 data={data}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => <ActivityCard activity={item} />}
+                ListHeaderComponent={<WeeklySummaryStrip summary={weekly} />}
             />
         </View>
     );
