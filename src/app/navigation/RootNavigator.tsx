@@ -21,6 +21,7 @@ export function RootNavigator() {
         <NavigationContainer>
             <Stack.Navigator
                 screenOptions={{
+                    headerStyle: { backgroundColor: colors.card },
                     headerTitleStyle: { fontSize: 17, fontWeight: '500', color: colors.text },
                     headerTintColor: colors.accent,
                     contentStyle: { backgroundColor: colors.bg },

@@ -1,3 +1,4 @@
+import { Appearance } from 'react-native';
 import type { TextStyle } from 'react-native';
 
 /**
@@ -5,9 +6,14 @@ import type { TextStyle } from 'react-native';
  *
  * 기존 색감(따뜻한 회색 + 채도 낮은 강조색)을 유지하면서
  * 컴포넌트에서 실제로 필요한 항목만 더했다.
+ *
+ * 다크모드는 앱이 켜질 때 시스템 설정을 한 번만 읽어서 고른다.
+ * 실시간 전환은 지원하지 않는다 — StyleSheet.create가 화면 파일마다
+ * 모듈 최상단에서 한 번만 호출되기 때문에, 값이 바뀌어도 이미 만들어진
+ * 스타일은 갱신되지 않는다. 설정을 바꾸면 앱을 재시작해야 반영된다.
  */
 
-export const colors = {
+const lightColors = {
   // 배경
   bg: '#f7f7f5',
   /** 눌림·비활성 배경 */
@@ -49,6 +55,44 @@ export const colors = {
   /** 카드 그림자 */
   shadow: '#000000',
 };
+
+const darkColors: typeof lightColors = {
+  // 배경
+  bg: '#1a1a19',
+  bgSubtle: '#252523',
+  card: '#2f2f2c',
+
+  // 글자
+  text: '#f0efeb',
+  textMuted: '#b4b2a9',
+  textDisabled: '#888780',
+  textInverse: '#ffffff',
+
+  // 선
+  border: 'rgba(255,255,255,0.12)',
+  divider: 'rgba(255,255,255,0.07)',
+
+  // 강조 — iOS 다크모드 시스템 컬러 기준. 와이어프레임 파스텔 톤보다 채도를 올렸다
+  accent: '#0a84ff',
+  accentPressed: '#086cd1',
+  accentDisabled: '#153b60',
+  accentSubtle: '#153d65',
+
+  // 상태
+  warning: '#ff9f0a',
+  warningSubtle: '#664614',
+  danger: '#ff453a',
+  dangerSubtle: '#662824',
+  success: '#30d158',
+  successSubtle: '#21562e',
+
+  // 그 외
+  health: '#e08bab',
+  healthSubtle: '#573f49',
+  shadow: '#000000',
+};
+
+export const colors = Appearance.getColorScheme() === 'dark' ? darkColors : lightColors;
 
 export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 };
 
