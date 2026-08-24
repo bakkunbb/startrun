@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         backgroundColor: colors.card,
         borderRadius: radius.md,
-        padding: spacing.sm,
+        padding: spacing.md,
         gap: 4,
     },
     metricLabel: {

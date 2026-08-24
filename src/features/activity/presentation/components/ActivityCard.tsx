@@ -61,7 +61,8 @@ const styles = StyleSheet.create({
     },
     distance: {
         fontSize: 22,
-        fontWeight: '500'
+        fontWeight: '500',
+        color: colors.text,
     },
     meta: {
         ...typography.caption,

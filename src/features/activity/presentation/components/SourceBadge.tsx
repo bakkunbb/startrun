@@ -21,8 +21,8 @@ export function SourceBadge({ source }: { source: ActivitySource }) {
 
 const styles = StyleSheet.create({
     badge: {
-        paddingHorizontal: spacing.sm,
-        paddingVertical: 4,
+        paddingHorizontal: spacing.md,
+        paddingVertical: 6,
         borderRadius: radius.sm,
         alignSelf: 'flex-start',
     },
