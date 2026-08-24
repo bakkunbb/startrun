@@ -33,12 +33,14 @@ export function NoteEditor({ id, activityNote }: { id: string; activityNote: str
     }
 
     return (
-        <View>
-            <Text>메모</Text>
+        <View style={styles.wrap}>
+            <Text style={styles.label}>메모</Text>
             <TextInput
+                style={styles.input}
                 value={note}
                 onChangeText={setNote}
                 placeholder="내용을 입력하세요"
+                placeholderTextColor={colors.textDisabled}
                 multiline={true}
                 selectTextOnFocus={false}
                 textAlignVertical="top" />
@@ -61,6 +63,25 @@ export function NoteEditor({ id, activityNote }: { id: string; activityNote: str
 }
 
 const styles = StyleSheet.create({
+    wrap: {
+        marginHorizontal: 16,
+        marginTop: 12,
+        gap: 8,
+    },
+    label: {
+        fontSize: 13,
+        color: colors.textMuted,
+    },
+    input: {
+        minHeight: 88,
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 8,
+        backgroundColor: colors.card,
+        padding: 10,
+        fontSize: 15,
+        color: colors.text,
+    },
     noteButton: {
         alignSelf: 'flex-end',
         minWidth: 88,

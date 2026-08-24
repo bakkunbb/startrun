@@ -1,9 +1,7 @@
-import { ActivityIndicator, Alert, Button, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, StyleSheet, Text, View } from "react-native";
 import { useActivity } from "../hooks/useActivity";
-import { paceSecPerKm, primarySegments } from "../../domain/entities/Activity";
+import { primarySegments } from "../../domain/entities/Activity";
 import { segmentSummary } from "../../domain/entities/Segment";
-import { formatDatetime, formatDistanceKm, formatDuration, formatPace } from "@/core/utils/format";
-import { SourceBadge } from "../components/SourceBadge";
 import { SegmentTable } from "../components/SegmentTable";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { NoteEditor } from "../components/NoteEditor";
@@ -14,7 +12,10 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useCallback, useLayoutEffect, } from "react";
 import { HeaderDeleteButton } from "../components/HeaderDeleteButton";
 import { EmptyState } from "@/core/ui/EmptyState";
-
+import { DetailHeader } from "../components/DetailHeader";
+import { MetricsGrid } from "../components/MetricsGrid";
+import { PaceBarChart } from "../components/PaceBarChart";
+import { colors, spacing } from "@/app/theme";
 
 export function DetailScreen({ route }: { route: any }) {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -81,34 +82,18 @@ export function DetailScreen({ route }: { route: any }) {
 
     return (
         <KeyboardAwareScrollView contentContainerStyle={styles.content} bottomOffset={24}>
-            <View>
-                <Text>{formatDatetime(activity.startedAt)}</Text>
-                <SourceBadge source={activity.source} />
-                <View>
-                    <Text>거리</Text>
-                    <Text>{formatDistanceKm(activity.distanceMeters)} km</Text>
-                    <Text>시간</Text>
-                    <Text>{formatDuration(activity.durationSeconds)}</Text>
-                    <Text>페이스</Text>
-                    <Text>{formatPace(paceSecPerKm(activity))} /km</Text>
-                    <Text>심박수</Text>
-                    <Text>{activity.heartRate} bpm</Text>
+            <DetailHeader activity={activity} />
+            <MetricsGrid activity={activity} view={view} summary={summary} />
+
+            {view ? (
+                <View style={styles.segmentSection}>
+                    <Text style={styles.segmentSectionLabel}>구간 기록</Text>
+                    <PaceBarChart view={view} summary={summary} />
+                    <SegmentTable view={view} />
                 </View>
-                <View>
-                    <View>
-                        <Text>구간</Text>
-                        <Text>{summary?.count}개 ({summary?.measuredCount} 기준)</Text>
-                    </View>
-                    <Text>최고 페이스 {formatPace(summary?.fastestPace)}</Text>
-                    <Text>평균 페이스 {formatPace(summary?.averagePace)}</Text>
-                    <Text>편차 {formatPace(summary?.spread)}</Text>
-                </View>
-                {view ? <SegmentTable view={view} /> : null}
-            </View>
+            ) : null}
+
             <NoteEditor id={id} activityNote={activity.note} />
-            <View>
-                <Button title="삭제" onPress={onDelete} />
-            </View>
         </KeyboardAwareScrollView>
     );
 }
@@ -121,5 +106,14 @@ const styles = StyleSheet.create({
         padding: 24,
         gap: 12,
     },
-    content: { paddingVertical: 16, gap: 12 },
+    content: { paddingVertical: spacing.lg, gap: spacing.md },
+    segmentSection: {
+        marginTop: spacing.sm,
+    },
+    segmentSectionLabel: {
+        fontSize: 13,
+        color: colors.textMuted,
+        marginHorizontal: spacing.lg,
+        marginBottom: spacing.xs,
+    },
 });
