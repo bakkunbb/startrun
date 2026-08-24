@@ -10,9 +10,6 @@ import { SegmentView } from "@/features/activity/domain/entities/Segment";
 import { SumamryCard } from "./SummaryCard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSaveImported } from "../hooks/useSaveImported";
-import { RootStackParamList } from "@/app/navigation/RootNavigator";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
 import { useDuplicateCheck } from "../hooks/useDuplicateCheck";
 import { formatDistanceKm, formatMonthDay } from "@/core/utils/format";
 import { colors } from "@/app/theme";
@@ -28,7 +25,6 @@ const WARNING_MESSAGES: Record<ExtractionWarning, string> = {
 };
 
 export function ReviewForm({ dto, onLeave }: { dto: ExtractionDto; onLeave: () => void }) {
-    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const insets = useSafeAreaInsets();
 
     const extracted = useMemo(() => toExtractedActivity(dto), [dto]);
@@ -61,7 +57,6 @@ export function ReviewForm({ dto, onLeave }: { dto: ExtractionDto; onLeave: () =
             {
                 onSuccess: () => {
                     onLeave();
-                    navigation.popToTop();
                 },
                 onError: (_) => {
                     Alert.alert('저장하지 못했습니다', '잠시 후 다시 시도해주세요.');
@@ -159,10 +154,10 @@ const styles = StyleSheet.create({
     flex: { flex: 1 },
     content: { paddingTop: 16, paddingBottom: 32, gap: 12 },
     basisHint: {
-        fontSize: 12,
+        fontSize: 13,
         color: colors.textMuted,
         marginHorizontal: 16,
-        marginTop: -4,
+        marginTop: 4,
     },
     segmentHeader: {
         flexDirection: 'row',
@@ -172,7 +167,7 @@ const styles = StyleSheet.create({
         marginTop: 8,
     },
     segmentHeaderLabel: {
-        fontSize: 13,
+        fontSize: 14,
         color: colors.textMuted,
     },
     segmentedControl: {
@@ -191,7 +186,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.bgSubtle,
     },
     segmentButtonText: {
-        fontSize: 12,
+        fontSize: 13,
         color: colors.textMuted,
     },
     segmentButtonTextOn: {
@@ -219,7 +214,7 @@ const styles = StyleSheet.create({
     },
     saveText: {
         color: colors.textInverse,
-        fontSize: 17,
+        fontSize: 18,
         fontWeight: '600',
     },
 });

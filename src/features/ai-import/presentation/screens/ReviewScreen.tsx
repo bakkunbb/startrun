@@ -48,6 +48,10 @@ export default function ReviewScreen() {
         ]);
     })
 
+    useEffect(() => {
+        if (canLeave) navigation.popToTop();
+    }, [canLeave, navigation]);
+
     if (extract.isError) {
         const code = extract.error.code;
         const { title, description } = EXTRACTION_MESSAGES[code];
