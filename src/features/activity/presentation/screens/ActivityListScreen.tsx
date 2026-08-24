@@ -73,7 +73,7 @@ export function ActivityListScreen() {
                 data={data}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => <ActivityCard activity={item} />}
-                ListHeaderComponent={<WeeklySummaryStrip summary={weekly} />}
+                ListHeaderComponent={weekly.count > 0 ? <WeeklySummaryStrip summary={weekly} /> : null}
             />
         </View>
     );
