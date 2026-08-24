@@ -46,17 +46,17 @@ const styles = StyleSheet.create({
     metricCard: {
         flexBasis: '47%',
         flexGrow: 1,
-        backgroundColor: colors.bgSubtle,
+        backgroundColor: colors.card,
         borderRadius: radius.md,
         padding: spacing.sm,
-        gap: 2,
+        gap: 4,
     },
     metricLabel: {
-        fontSize: 12,
+        fontSize: 13,
         color: colors.textMuted,
     },
     metricValue: {
-        fontSize: 19,
+        fontSize: 21,
         fontWeight: '500',
         color: colors.text,
     },

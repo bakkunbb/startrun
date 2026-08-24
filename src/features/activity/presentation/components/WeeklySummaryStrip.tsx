@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
         marginHorizontal: spacing.md,
         marginTop: spacing.sm,
         marginBottom: spacing.xs,
-        backgroundColor: colors.bgSubtle,
+        backgroundColor: colors.card,
         borderRadius: radius.lg,
         gap: 2,
     },

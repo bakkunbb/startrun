@@ -11,7 +11,11 @@ export function PaceBarChart({ view, summary }: { view: SegmentView; summary: Se
         <View style={styles.barRow}>
             {view.segments.map((s) => {
                 const pace = segmentPaceSecPerKm(s);
-                const heightPct = pace && summary ? (summary.fastestPace / pace) * 100 : 0;
+                // 실제 비율(fastestPace/pace)을 세제곱해서 차이를 눈에 띄게 키운다.
+                // min-max로 강제로 늘리면 편차가 실제보다 훨씬 커 보이므로 쓰지 않는다.
+                const heightPct = pace && summary
+                    ? Math.pow(summary.fastestPace / pace, 3) * 100
+                    : 0;
                 const isFastest = fastest?.index === s.index;
                 const remainder = isRemainder(view, s.index);
 
@@ -43,7 +47,7 @@ const styles = StyleSheet.create({
     bar: {
         flex: 1,
         borderRadius: 3,
-        backgroundColor: colors.bgSubtle,
+        backgroundColor: colors.card,
         minHeight: 3,
     },
     barFastest: {
