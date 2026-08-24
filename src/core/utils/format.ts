@@ -42,6 +42,6 @@ export function formatDatetime(d: Date): string {
     return `${d.getMonth() + 1}월 ${padNumber(d.getDate())}일 (${dayLabel}) ${padNumber(d.getHours())} : ${padNumber(d.getMinutes())}`;
 }
 
-export function padNumber(num: number): String {
+export function padNumber(num: number): string {
     return num.toString().padStart(2, '0');
 }
