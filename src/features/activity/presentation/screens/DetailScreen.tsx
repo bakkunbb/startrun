@@ -1,10 +1,7 @@
-import { ActivityIndicator, Alert, Button, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, StyleSheet, Text, View } from "react-native";
 import { useActivity } from "../hooks/useActivity";
-import { Banner } from "@/core/ui/Banner";
-import { paceSecPerKm, primarySegments } from "../../domain/entities/Activity";
+import { primarySegments } from "../../domain/entities/Activity";
 import { segmentSummary } from "../../domain/entities/Segment";
-import { formatDatetime, formatDistanceKm, formatDuration, formatPace } from "@/core/utils/format";
-import { SourceBadge } from "../components/SourceBadge";
 import { SegmentTable } from "../components/SegmentTable";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { NoteEditor } from "../components/NoteEditor";
@@ -14,8 +11,11 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useCallback, useLayoutEffect, } from "react";
 import { HeaderDeleteButton } from "../components/HeaderDeleteButton";
-import { colors } from "@/app/theme";
-
+import { EmptyState } from "@/core/ui/EmptyState";
+import { DetailHeader } from "../components/DetailHeader";
+import { MetricsGrid } from "../components/MetricsGrid";
+import { PaceBarChart } from "../components/PaceBarChart";
+import { colors, spacing } from "@/app/theme";
 
 export function DetailScreen({ route }: { route: any }) {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -58,26 +58,22 @@ export function DetailScreen({ route }: { route: any }) {
 
     if (isError) {
         return (
-            <View style={styles.center}>
-                <Banner
-                    tone="danger"
-                    title="기록을 불러오지 못했습니다"
-                />
-                <Pressable
-                    style={styles.retry}
-                    onPress={() => refetch()}
-                >
-                    <Text style={styles.retryText}>다시 시도</Text>
-                </Pressable>
-            </View>
+            <EmptyState
+                title="불러오지 못했어요"
+                actionLabel="다시 시도"
+                onAction={() => refetch()}
+            />
         )
     }
 
     if (activity === null) {
         return (
-            <View style={styles.center}>
-                <Text style={styles.empty}>기록을 찾을 수 없습니다</Text>
-            </View>
+            <EmptyState
+                title="기록을 찾을 수 없어요"
+                description="삭제되었거나 잘못된 접근입니다"
+                actionLabel="목록으로"
+                onAction={() => navigation.popToTop()}
+            />
         )
     }
 
@@ -86,34 +82,18 @@ export function DetailScreen({ route }: { route: any }) {
 
     return (
         <KeyboardAwareScrollView contentContainerStyle={styles.content} bottomOffset={24}>
-            <View>
-                <Text>{formatDatetime(activity.startedAt)}</Text>
-                <SourceBadge source={activity.source} />
-                <View>
-                    <Text>거리</Text>
-                    <Text>{formatDistanceKm(activity.distanceMeters)} km</Text>
-                    <Text>시간</Text>
-                    <Text>{formatDuration(activity.durationSeconds)}</Text>
-                    <Text>페이스</Text>
-                    <Text>{formatPace(paceSecPerKm(activity))} /km</Text>
-                    <Text>심박수</Text>
-                    <Text>{activity.heartRate} bpm</Text>
+            <DetailHeader activity={activity} />
+            <MetricsGrid activity={activity} view={view} summary={summary} />
+
+            {view ? (
+                <View style={styles.segmentSection}>
+                    <Text style={styles.segmentSectionLabel}>구간 기록</Text>
+                    <PaceBarChart view={view} summary={summary} />
+                    <SegmentTable view={view} />
                 </View>
-                <View>
-                    <View>
-                        <Text>구간</Text>
-                        <Text>{summary?.count}개 ({summary?.measuredCount} 기준)</Text>
-                    </View>
-                    <Text>최고 페이스 {formatPace(summary?.fastestPace)}</Text>
-                    <Text>평균 페이스 {formatPace(summary?.averagePace)}</Text>
-                    <Text>편차 {formatPace(summary?.spread)}</Text>
-                </View>
-                {view ? <SegmentTable view={view} /> : null}
-            </View>
+            ) : null}
+
             <NoteEditor id={id} activityNote={activity.note} />
-            <View>
-                <Button title="삭제" onPress={onDelete} />
-            </View>
         </KeyboardAwareScrollView>
     );
 }
@@ -126,14 +106,14 @@ const styles = StyleSheet.create({
         padding: 24,
         gap: 12,
     },
-    content: { paddingVertical: 16, gap: 12 },
-    empty: { fontSize: 15, color: '#6B7280' },
-    retry: {
-        paddingHorizontal: 16,
-        paddingVertical: 10,
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: colors.border,
+    content: { paddingVertical: spacing.lg, gap: spacing.md },
+    segmentSection: {
+        marginTop: spacing.sm,
     },
-    retryText: { fontSize: 15, color: colors.text },
+    segmentSectionLabel: {
+        fontSize: 14,
+        color: colors.textMuted,
+        marginHorizontal: spacing.lg,
+        marginBottom: spacing.xs,
+    },
 });

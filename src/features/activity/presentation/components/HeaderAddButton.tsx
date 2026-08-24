@@ -1,13 +1,13 @@
-import { colors } from "@/app/theme";
 import { Pressable, StyleSheet, Text } from "react-native";
+import { colors } from "@/app/theme";
 
-export function HeaderDeleteButton({ onPress }: { onPress: () => void }) {
+export function HeaderAddButton({ onPress }: { onPress: () => void }) {
     return (
         <Pressable
             onPress={onPress}
             hitSlop={8}
             style={({ pressed }) => [styles.headerButton, pressed && styles.headerButtonPressed]}>
-            <Text style={styles.headerButtonText}>삭제</Text>
+            <Text style={styles.headerButtonText}>+</Text>
         </Pressable>
     );
 }
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
         opacity: 0.5,
     },
     headerButtonText: {
-        fontSize: 17,
-        color: colors.danger,
+        fontSize: 32,
+        color: colors.accent,
     },
 });

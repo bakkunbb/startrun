@@ -39,5 +39,9 @@ export function formatDatetime(d: Date): string {
     // 숫자에 맞는 배열 인덱스 값 가져오기
     const dayLabel: string = week[d.getDay()];
 
-    return `${d.getMonth() + 1}월 ${d.getDate()}일 (${dayLabel}) ${d.getHours()} : ${d.getMinutes()}`;
+    return `${d.getMonth() + 1}월 ${padNumber(d.getDate())}일 (${dayLabel}) ${padNumber(d.getHours())} : ${padNumber(d.getMinutes())}`;
+}
+
+export function padNumber(num: number): string {
+    return num.toString().padStart(2, '0');
 }

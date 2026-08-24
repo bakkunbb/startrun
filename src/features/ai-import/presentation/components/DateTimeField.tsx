@@ -1,4 +1,4 @@
-import { colors } from "@/app/theme";
+import { colors, layout } from "@/app/theme";
 import { formatDatetime } from "@/core/utils/format";
 import RNDateTimePicker, { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { useState } from "react";
@@ -54,7 +54,7 @@ export function DateTimeField({ label, value, onChange, uncertain }: Props) {
                 <RNDateTimePicker
                     value={value}
                     mode="datetime"
-                    textColor="#000000"
+                    textColor={colors.text}
                     display="spinner"
                     locale="ko-KR"
                     onValueChange={(_, date) => {
@@ -70,13 +70,13 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         alignItems: 'center',
-        minHeight: 48,
+        minHeight: layout.minTouchSize,
         gap: 8,
     },
     label: {
-        width: 56,
-        fontSize: 14,
-        color: '#6B7280',
+        width: layout.formLabelWidth,
+        fontSize: 15,
+        color: colors.textMuted,
     },
     value: {
         flex: 1,
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.card,
     },
     valueText: {
-        fontSize: 17,
+        fontSize: 18,
         color: colors.text,
     },
     uncertain: {
@@ -100,6 +100,6 @@ const styles = StyleSheet.create({
         backgroundColor: colors.bgSubtle,
     },
     unit: {
-        width: 32,
+        width: layout.formUnitWidth,
     },
 });

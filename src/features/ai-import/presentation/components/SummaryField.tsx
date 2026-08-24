@@ -1,4 +1,4 @@
-import { colors } from '@/app/theme';
+import { colors, layout } from '@/app/theme';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import type { KeyboardTypeOptions } from 'react-native';
 
@@ -34,7 +34,7 @@ export function Field({
                     onChangeText={onChangeText}
                     keyboardType={keyboardType}
                     placeholder={placeholder}
-                    placeholderTextColor="#9CA3AF"
+                    placeholderTextColor={colors.textDisabled}
                     multiline={multiline}
                     selectTextOnFocus={!multiline}
                     textAlignVertical={multiline ? 'top' : 'center'}
@@ -50,17 +50,17 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         alignItems: 'center',
-        minHeight: 48,
+        minHeight: layout.minTouchSize,
         gap: 8,
     },
     label: {
-        width: 56,
-        fontSize: 14,
-        color: '#6B7280',
+        width: layout.formLabelWidth,
+        fontSize: 15,
+        color: colors.textMuted,
     },
     input: {
         flex: 1,
-        fontSize: 17,
+        fontSize: 18,
         color: colors.text,
         paddingVertical: 8,
         paddingHorizontal: 10,
@@ -82,14 +82,14 @@ const styles = StyleSheet.create({
         backgroundColor: colors.dangerSubtle,
     },
     unit: {
-        width: 32,
-        fontSize: 14,
-        color: '#6B7280',
+        width: layout.formUnitWidth,
+        fontSize: 15,
+        color: colors.textMuted,
     },
     hint: {
-        marginLeft: 64,   // label(56) + gap(8)
+        marginLeft: layout.formLabelWidth + 8,   // label + gap
         marginBottom: 6,
-        fontSize: 12,
+        fontSize: 13,
         color: colors.danger,
     },
 });

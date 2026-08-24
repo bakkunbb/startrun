@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Activity, paceSecPerKm, primarySegments, SegmentBearing, } from '../../domain/entities/Activity';
 import { formatDistanceKm, formatDuration, formatMonthDay, formatPace } from '@/core/utils/format';
-import { colors, spacing, radius } from '@/app/theme';
+import { colors, spacing, radius, typography } from '@/app/theme';
 import { SourceBadge } from './SourceBadge';
 import { RootStackParamList } from '@/app/navigation/RootNavigator';
 import { useNavigation } from '@react-navigation/native';
@@ -19,10 +19,10 @@ export default function ActivityCard({ activity }: { activity: Activity }) {
                     navigation.navigate('Detail', { id: activity.id });
                 }}>
                 <View style={styles.rowContainer}>
-                    <Text style={styles.distance}>{formatDistanceKm(activity.distanceMeters)}</Text>
+                    <Text style={styles.distance}>{formatDistanceKm(activity.distanceMeters)} km</Text>
                     <SourceBadge source={activity.source} />
                 </View>
-                <Text>
+                <Text style={styles.meta}>
                     {formatMonthDay(activity.startedAt)}
                     {' • '}
                     {formatDuration(activity.durationSeconds)}
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
         marginHorizontal: spacing.md,
         marginVertical: spacing.sm,
         borderRadius: radius.md,
-        shadowColor: '#000',
+        shadowColor: colors.shadow,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
@@ -60,7 +60,12 @@ const styles = StyleSheet.create({
         // paddingHorizontal: 16,         // Adds internal padding from screen edges
     },
     distance: {
-        fontSize: 15,
+        fontSize: 22,
         fontWeight: '500'
-    }
+    },
+    meta: {
+        ...typography.caption,
+        color: colors.textMuted,
+        marginTop: 4,
+    },
 });

@@ -1,14 +1,20 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Field } from "./SummaryField";
 import { ExtractedActivity } from "../../domain/entities/ExtractedActivity";
 import { useReviewDraft } from "../hooks/useReviewDraft";
 import { useState } from "react";
 import { DateTimeField } from "./DateTimeField";
-import { colors } from "@/app/theme";
+import { colors, layout } from "@/app/theme";
+import { formatPace } from "@/core/utils/format";
 
 export function SumamryCard({ activity, review }: { activity: ExtractedActivity; review: ReturnType<typeof useReviewDraft>; }) {
 
     const [date, setDate] = useState(review.draft.startedAt ?? new Date())
+
+    const { distanceMeters, durationSeconds } = review.draft;
+    const pace = distanceMeters && durationSeconds
+        ? (durationSeconds / distanceMeters) * 1000
+        : null;
 
     return (
         <View style={cardStyles.card}>
@@ -26,6 +32,10 @@ export function SumamryCard({ activity, review }: { activity: ExtractedActivity;
                 invalid={activity.lowConfidenceFields.includes('durationSeconds')}
                 hint="52:31 또는 1:02:03 형식"
             />
+            <View style={cardStyles.row}>
+                <Text style={cardStyles.label}>평균 페이스</Text>
+                <Text style={cardStyles.paceValue}>{formatPace(pace)}/km</Text>
+            </View>
             <Field
                 label="심박수"
                 value={review.inputs.heartRate} onChangeText={review.setHeartRateInput}
@@ -55,5 +65,23 @@ const cardStyles = StyleSheet.create({
         borderRadius: 12,
         padding: 16,
         marginHorizontal: 16,
+    },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        minHeight: layout.minTouchSize,
+        gap: 8,
+    },
+    label: {
+        width: layout.formLabelWidth,
+        fontSize: 15,
+        color: colors.textMuted,
+    },
+    paceValue: {
+        flex: 1,
+        fontSize: 18,
+        color: colors.textMuted,
+        textAlign: 'right',
+        paddingHorizontal: 10,
     },
 });

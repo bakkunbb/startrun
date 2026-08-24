@@ -11,14 +11,14 @@ export const colors = {
   // 배경
   bg: '#f7f7f5',
   /** 눌림·비활성 배경 */
-  bgSubtle: '#efefec',
+  bgSubtle: '#f1efe8',
   card: '#ffffff',
 
   // 글자
   text: '#1f1f1d',
-  textMuted: '#6b7280',
+  textMuted: '#5f5e5a',
   /** 자투리 구간, 비활성 버튼 글자 */
-  textDisabled: '#a1a19b',
+  textDisabled: '#888780',
   /** 색 배경 위 */
   textInverse: '#ffffff',
 
@@ -28,18 +28,26 @@ export const colors = {
   divider: 'rgba(0,0,0,0.06)',
 
   // 강조
-  accent: '#1c64f2',
-  accentPressed: '#1750c4',
-  accentDisabled: '#b9cdf7',
+  accent: '#185fa5',
+  accentPressed: '#134d86',
+  accentDisabled: '#b7cde3',
   /** 정보 배너 배경 */
-  accentSubtle: '#eef3fe',
+  accentSubtle: '#e6f1fb',
 
   // 상태
-  warning: '#a36a00',
-  warningSubtle: '#fdf4e3',
+  warning: '#854f0b',
+  warningSubtle: '#faeeda',
   danger: '#a32d2d',
   dangerSubtle: '#fbeceb',
-  success: '#2f7d4f',
+  success: '#3b6d11',
+  successSubtle: '#eaf3de',
+
+  // 그 외
+  /** SourceBadge의 건강 앱 배지 */
+  health: '#993556',
+  healthSubtle: '#fbeaf0',
+  /** 카드 그림자 */
+  shadow: '#000000',
 };
 
 export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 };
@@ -55,7 +63,7 @@ export const layout = {
   minTouchSize: 48,
   /** 화면 좌우 여백 */
   screenPadding: spacing.lg,
-  formLabelWidth: 56,
+  formLabelWidth: 72,
   formUnitWidth: 32,
 };
 
@@ -70,16 +78,16 @@ export const hitSlop = { top: 8, bottom: 8, left: 8, right: 8 };
  */
 export const typography = {
   /** 상세 화면의 큰 숫자 — 10.24, 52:31 */
-  display: { fontSize: 32, fontWeight: '700', letterSpacing: -0.5 },
-  title: { fontSize: 20, fontWeight: '600' },
-  subtitle: { fontSize: 16, fontWeight: '600' },
+  display: { fontSize: 34, fontWeight: '700', letterSpacing: -0.5 },
+  title: { fontSize: 22, fontWeight: '600' },
+  subtitle: { fontSize: 17, fontWeight: '600' },
   /** 본문, 입력값 */
-  body: { fontSize: 17, fontWeight: '400' },
+  body: { fontSize: 18, fontWeight: '400' },
   /** 라벨, 보조 설명 */
-  label: { fontSize: 14, fontWeight: '400' },
+  label: { fontSize: 15, fontWeight: '400' },
   /** 단위, 안내 문구, 표 머리 */
-  caption: { fontSize: 12, fontWeight: '400' },
-  button: { fontSize: 17, fontWeight: '600' },
+  caption: { fontSize: 13, fontWeight: '400' },
+  button: { fontSize: 18, fontWeight: '600' },
 } satisfies Record<string, TextStyle>;
 
 /** 표의 숫자 폭 고정 — 없으면 1과 8의 너비가 달라 세로줄이 어긋난다 */
