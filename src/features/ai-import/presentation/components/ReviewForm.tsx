@@ -1,11 +1,12 @@
 import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, Pressable, PressableStateCallbackType, ScrollView, StyleSheet, Text, View } from "react-native";
-import { ExtractionWarning } from "../../domain/entities/ExtractedActivity";
+import { describeSegmentBasis, ExtractionWarning } from "../../domain/entities/ExtractedActivity";
 import { useReviewDraft } from "../hooks/useReviewDraft";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { toExtractedActivity } from "../../domain/toExtractedActivity";
 import { Banner } from "@/core/ui/Banner";
 import { primarySegments } from "@/features/activity/domain/entities/Activity";
 import { SegmentTable } from "@/features/activity/presentation/components/SegmentTable";
+import { SegmentView } from "@/features/activity/domain/entities/Segment";
 import { SumamryCard } from "./SummaryCard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSaveImported } from "../hooks/useSaveImported";
@@ -34,7 +35,20 @@ export function ReviewForm({ dto, onLeave }: { dto: ExtractionDto; onLeave: () =
     const review = useReviewDraft(extracted);
     const draft = review.draft;
 
-    const view = primarySegments(review.draft);
+    const [selectedKind, setSelectedKind] = useState<'split' | 'lap'>('lap');
+
+    const hasSplits = !!draft.splits?.length && !!draft.splitUnitMeters;
+    const hasLaps = !!draft.laps?.length;
+    const showToggle = hasSplits && hasLaps;
+
+    const view: SegmentView | null = showToggle
+        ? (selectedKind === 'split'
+            ? { kind: 'split', segments: draft.splits!, unitMeters: draft.splitUnitMeters! }
+            : { kind: 'lap', segments: draft.laps! })
+        : primarySegments(draft);
+
+    const basis = view?.kind === 'split' ? extracted.splitsBasis : extracted.lapsBasis;
+    const basisText = view && basis ? describeSegmentBasis(basis, view.kind) : null;
 
     const saveImported = useSaveImported();
     const { data: duplicates = [] } = useDuplicateCheck(review.draft.startedAt);
@@ -94,6 +108,26 @@ export function ReviewForm({ dto, onLeave }: { dto: ExtractionDto; onLeave: () =
                         />
                     ) : null}
                     <SumamryCard activity={extracted} review={review} />
+                    {showToggle ? (
+                        <View style={styles.segmentHeader}>
+                            <Text style={styles.segmentHeaderLabel}>구간 기록</Text>
+                            <View style={styles.segmentedControl}>
+                                <Pressable
+                                    style={[styles.segmentButton, selectedKind === 'lap' && styles.segmentButtonOn]}
+                                    onPress={() => setSelectedKind('lap')}
+                                >
+                                    <Text style={[styles.segmentButtonText, selectedKind === 'lap' && styles.segmentButtonTextOn]}>수동 랩</Text>
+                                </Pressable>
+                                <Pressable
+                                    style={[styles.segmentButton, selectedKind === 'split' && styles.segmentButtonOn]}
+                                    onPress={() => setSelectedKind('split')}
+                                >
+                                    <Text style={[styles.segmentButtonText, selectedKind === 'split' && styles.segmentButtonTextOn]}>자동 분할</Text>
+                                </Pressable>
+                            </View>
+                        </View>
+                    ) : null}
+                    {basisText ? <Text style={styles.basisHint}>{basisText}</Text> : null}
                     {view ? <SegmentTable view={view} /> : null}
                 </View >
             </ScrollView>
@@ -124,6 +158,45 @@ export function ReviewForm({ dto, onLeave }: { dto: ExtractionDto; onLeave: () =
 const styles = StyleSheet.create({
     flex: { flex: 1 },
     content: { paddingTop: 16, paddingBottom: 32, gap: 12 },
+    basisHint: {
+        fontSize: 12,
+        color: colors.textMuted,
+        marginHorizontal: 16,
+        marginTop: -4,
+    },
+    segmentHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginHorizontal: 16,
+        marginTop: 8,
+    },
+    segmentHeaderLabel: {
+        fontSize: 13,
+        color: colors.textMuted,
+    },
+    segmentedControl: {
+        flexDirection: 'row',
+        gap: 4,
+    },
+    segmentButton: {
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        borderRadius: 8,
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: colors.border,
+    },
+    segmentButtonOn: {
+        borderColor: colors.text,
+        backgroundColor: colors.bgSubtle,
+    },
+    segmentButtonText: {
+        fontSize: 12,
+        color: colors.textMuted,
+    },
+    segmentButtonTextOn: {
+        color: colors.text,
+    },
     bar: {
         paddingHorizontal: 16,
         paddingTop: 12,

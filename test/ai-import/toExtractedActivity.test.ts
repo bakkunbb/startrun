@@ -286,6 +286,7 @@ describe('종류 추정', () => {
     expect(r.splits).toHaveLength(4);
     expect(r.splitUnitMeters).toBe(1000);
     expect(r.warnings).not.toContain('unknown_segment_kind');
+    expect(r.splitsBasis).toEqual({ type: 'inferred' });
   });
 
   it('추정도 실패하면 랩으로 두고 경고한다', () => {
@@ -308,6 +309,71 @@ describe('종류 추정', () => {
     expect(r.laps).toHaveLength(3);
     expect(r.splits).toBeUndefined();
     expect(r.warnings).toContain('unknown_segment_kind');
+    expect(r.lapsBasis).toEqual({ type: 'fallback' });
+  });
+
+  it('kind가 unknown이고 간격이 들쭉날쭉하면 랩으로 추정한다', () => {
+    const r = toExtractedActivity(
+      dto({
+        distanceMeters: 2400,
+        durationSeconds: 600,
+        segmentSets: [
+          {
+            kind: 'unknown',
+            labelText: null,
+            unitMeters: null,
+            rows: [row(1, 400, 80), row(2, 800, 170), row(3, 1200, 260)],
+          },
+        ],
+      }),
+    );
+
+    expect(r.laps).toHaveLength(3);
+    expect(r.lapsBasis).toEqual({ type: 'inferred' });
+  });
+});
+
+describe('구간 근거', () => {
+  it('declared kind가 split이고 labelText가 있으면 label 근거를 남긴다', () => {
+    const r = toExtractedActivity(
+      dto({
+        distanceMeters: 2000,
+        durationSeconds: 610,
+        segmentSets: [
+          { kind: 'split', labelText: 'Splits', unitMeters: 1000, rows: [row(1, 1000, 305), row(2, 1000, 305)] },
+        ],
+      }),
+    );
+
+    expect(r.splitsBasis).toEqual({ type: 'label', labelText: 'Splits' });
+  });
+
+  it('declared kind가 lap이고 labelText가 있으면 label 근거를 남긴다', () => {
+    const r = toExtractedActivity(
+      dto({
+        distanceMeters: 2400,
+        durationSeconds: 600,
+        segmentSets: [
+          { kind: 'lap', labelText: 'Laps', unitMeters: null, rows: [row(1, 400, 80), row(2, 800, 170), row(3, 1200, 260)] },
+        ],
+      }),
+    );
+
+    expect(r.lapsBasis).toEqual({ type: 'label', labelText: 'Laps' });
+  });
+
+  it('declared kind가 있어도 labelText가 없으면 labelText는 null이다', () => {
+    const r = toExtractedActivity(
+      dto({
+        distanceMeters: 2000,
+        durationSeconds: 610,
+        segmentSets: [
+          { kind: 'split', labelText: null, unitMeters: 1000, rows: [row(1, 1000, 305), row(2, 1000, 305)] },
+        ],
+      }),
+    );
+
+    expect(r.splitsBasis).toEqual({ type: 'label', labelText: null });
   });
 });
 

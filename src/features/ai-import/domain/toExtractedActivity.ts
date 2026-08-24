@@ -1,6 +1,6 @@
 import { inferSegmentKind, Segment } from "@/features/activity/domain/entities/Segment";
 import { ExtractionDto, SegmentSetDto } from "../data/models/ExtractionDto";
-import { ExtractedActivity, ExtractionWarning } from "./entities/ExtractedActivity";
+import { ExtractedActivity, ExtractionWarning, SegmentBasis } from "./entities/ExtractedActivity";
 import { normalizeSegmentRows, RawSegmentRow } from "./normalizeSegments";
 
 function checkDate(dateString: string | null): ExtractionWarning | null {
@@ -69,6 +69,8 @@ export function toExtractedActivity(dto: ExtractionDto): ExtractedActivity {
     let splits: Segment[] | undefined;
     let laps: Segment[] | undefined;
     let splitUnitMeters: number | undefined;
+    let splitsBasis: SegmentBasis | undefined;
+    let lapsBasis: SegmentBasis | undefined;
 
     const grouped: Record<SegmentSetDto['kind'], RawSegmentRow[]> = {
         split: [],
@@ -76,12 +78,16 @@ export function toExtractedActivity(dto: ExtractionDto): ExtractedActivity {
         unknown: [],
     };
     let declaredUnit: number | undefined;
+    const declaredLabelText: Partial<Record<'split' | 'lap', string>> = {};
 
     for(const set of dto.segmentSets ?? []) {
         if(!set.rows || set.rows.length === 0) continue;
         grouped[set.kind].push(...orderWithin(set.rows));
         if (set.kind === 'split' && set.unitMeters != null) {
             declaredUnit ??= set.unitMeters;
+        }
+        if (set.kind !== 'unknown' && set.labelText) {
+            declaredLabelText[set.kind] ??= set.labelText;
         }
     }
 
@@ -95,6 +101,12 @@ export function toExtractedActivity(dto: ExtractionDto): ExtractedActivity {
         const kind = inferred && inferred.kind !== 'unknown'
             ? inferred.kind
             : declared !== 'unknown' ? declared : 'lap';
+
+        const basis: SegmentBasis = declared !== 'unknown'
+            ? { type: 'label', labelText: declaredLabelText[declared as 'split' | 'lap'] ?? null }
+            : inferred && inferred.kind !== 'unknown'
+                ? { type: 'inferred' }
+                : { type: 'fallback' };
 
         if(inferred?.kind === 'unknown') {
             warnings.add('unknown_segment_kind');
@@ -111,8 +123,10 @@ export function toExtractedActivity(dto: ExtractionDto): ExtractedActivity {
             const reindexed = [...segments].map((r, i) => ({...r, index: splits ? splits.length + i + 1 : i + 1}));
             splits = splits ? [...splits, ...reindexed] : reindexed;
             splitUnitMeters = (inferred?.kind === 'split' ? inferred.unitMeters : declaredUnit) ?? undefined;
+            splitsBasis = basis;
         } else {
             laps = laps ? [...laps, ...segments] : segments;
+            lapsBasis = basis;
         }
     }
 
@@ -128,6 +142,8 @@ export function toExtractedActivity(dto: ExtractionDto): ExtractedActivity {
         splits,
         laps,
         splitUnitMeters,
+        splitsBasis,
+        lapsBasis,
         lowConfidenceFields: dto.lowConfidenceFields,
         warnings: [...warnings]
     };
