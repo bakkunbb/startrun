@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     info: { backgroundColor: colors.accentSubtle, borderLeftColor: colors.accent },
     warning: { backgroundColor: colors.warningSubtle, borderLeftColor: colors.warning },
     danger: { backgroundColor: colors.dangerSubtle, borderLeftColor: colors.danger },
-    title: { fontWeight: '600' },
-    line: { fontSize: 13, lineHeight: 18 },
+    title: { fontSize: 15, fontWeight: '600' },
+    line: { fontSize: 14, lineHeight: 19 },
     actions: { flexDirection: 'row', gap: 8, marginTop: 8 },
 });

@@ -4,7 +4,7 @@ import { ExtractedActivity } from "../../domain/entities/ExtractedActivity";
 import { useReviewDraft } from "../hooks/useReviewDraft";
 import { useState } from "react";
 import { DateTimeField } from "./DateTimeField";
-import { colors } from "@/app/theme";
+import { colors, layout } from "@/app/theme";
 import { formatPace } from "@/core/utils/format";
 
 export function SumamryCard({ activity, review }: { activity: ExtractedActivity; review: ReturnType<typeof useReviewDraft>; }) {
@@ -69,17 +69,17 @@ const cardStyles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         alignItems: 'center',
-        minHeight: 48,
+        minHeight: layout.minTouchSize,
         gap: 8,
     },
     label: {
-        width: 56,
-        fontSize: 14,
+        width: layout.formLabelWidth,
+        fontSize: 15,
         color: colors.textMuted,
     },
     paceValue: {
         flex: 1,
-        fontSize: 17,
+        fontSize: 18,
         color: colors.textMuted,
         textAlign: 'right',
         paddingHorizontal: 10,

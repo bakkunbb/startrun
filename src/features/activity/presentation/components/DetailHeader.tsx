@@ -27,12 +27,12 @@ const styles = StyleSheet.create({
         marginTop: spacing.xs,
     },
     distanceUnit: {
-        fontSize: 15,
+        fontSize: 16,
         fontWeight: '400',
         color: colors.textMuted,
     },
     subtitle: {
-        fontSize: 13,
+        fontSize: 14,
         color: colors.textMuted,
     },
 });

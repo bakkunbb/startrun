@@ -63,7 +63,7 @@ export const layout = {
   minTouchSize: 48,
   /** 화면 좌우 여백 */
   screenPadding: spacing.lg,
-  formLabelWidth: 56,
+  formLabelWidth: 72,
   formUnitWidth: 32,
 };
 
@@ -78,16 +78,16 @@ export const hitSlop = { top: 8, bottom: 8, left: 8, right: 8 };
  */
 export const typography = {
   /** 상세 화면의 큰 숫자 — 10.24, 52:31 */
-  display: { fontSize: 32, fontWeight: '700', letterSpacing: -0.5 },
-  title: { fontSize: 20, fontWeight: '600' },
-  subtitle: { fontSize: 16, fontWeight: '600' },
+  display: { fontSize: 34, fontWeight: '700', letterSpacing: -0.5 },
+  title: { fontSize: 22, fontWeight: '600' },
+  subtitle: { fontSize: 17, fontWeight: '600' },
   /** 본문, 입력값 */
-  body: { fontSize: 17, fontWeight: '400' },
+  body: { fontSize: 18, fontWeight: '400' },
   /** 라벨, 보조 설명 */
-  label: { fontSize: 14, fontWeight: '400' },
+  label: { fontSize: 15, fontWeight: '400' },
   /** 단위, 안내 문구, 표 머리 */
-  caption: { fontSize: 12, fontWeight: '400' },
-  button: { fontSize: 17, fontWeight: '600' },
+  caption: { fontSize: 13, fontWeight: '400' },
+  button: { fontSize: 18, fontWeight: '600' },
 } satisfies Record<string, TextStyle>;
 
 /** 표의 숫자 폭 고정 — 없으면 1과 8의 너비가 달라 세로줄이 어긋난다 */

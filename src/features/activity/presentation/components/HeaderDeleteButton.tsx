@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
         opacity: 0.5,
     },
     headerButtonText: {
-        fontSize: 16,
+        fontSize: 17,
         color: colors.danger,
     },
 });

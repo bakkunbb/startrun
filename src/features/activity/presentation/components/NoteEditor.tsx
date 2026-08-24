@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
         gap: 8,
     },
     label: {
-        fontSize: 13,
+        fontSize: 14,
         color: colors.textMuted,
     },
     input: {
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         backgroundColor: colors.card,
         padding: 10,
-        fontSize: 15,
+        fontSize: 16,
         color: colors.text,
     },
     noteButton: {
@@ -95,6 +95,6 @@ const styles = StyleSheet.create({
     noteButtonDone: { backgroundColor: colors.success },
     noteButtonOff: { backgroundColor: colors.bgSubtle },
     pressed: { opacity: 0.85 },
-    noteButtonText: { fontSize: 15, fontWeight: '600', color: colors.textInverse },
+    noteButtonText: { fontSize: 16, fontWeight: '600', color: colors.textInverse },
     noteButtonTextOff: { color: colors.textDisabled },
 });

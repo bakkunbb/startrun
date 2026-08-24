@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
         marginTop: spacing.sm,
     },
     segmentSectionLabel: {
-        fontSize: 13,
+        fontSize: 14,
         color: colors.textMuted,
         marginHorizontal: spacing.lg,
         marginBottom: spacing.xs,

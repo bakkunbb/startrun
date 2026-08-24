@@ -22,12 +22,12 @@ export function SourceBadge({ source }: { source: ActivitySource }) {
 const styles = StyleSheet.create({
     badge: {
         paddingHorizontal: spacing.sm,
-        paddingVertical: 2,
+        paddingVertical: 4,
         borderRadius: radius.sm,
         alignSelf: 'flex-start',
     },
     label: {
-        fontSize: 11,
+        fontSize: 12,
         fontWeight: '500',
     },
 });
