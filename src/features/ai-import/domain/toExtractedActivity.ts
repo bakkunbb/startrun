@@ -38,7 +38,7 @@ function orderWithin(rows: RawSegmentRow[]): RawSegmentRow[] {
 }
 
 /** 최종 순서대로 1..n을 매긴다. 정렬하지 않는다 */
-function assignSequential(rows: RawSegmentRow[]): RawSegmentRow[] {
+function assignSequential<T extends { index: number }>(rows: T[]): T[] {
   return rows.map((r, i) => ({ ...r, index: i + 1 }));
 }
 

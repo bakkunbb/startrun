@@ -48,6 +48,7 @@ describe('신규 설치', () => {
 
     expect(cols.map((c) => c.name).sort()).toEqual(
       [
+        'avg_hr',
         'calories',
         'distance_m',
         'duration_s',
@@ -68,7 +69,7 @@ describe('신규 설치', () => {
     const cols = (await db.execute('PRAGMA table_info(activity_segments)')).rows;
 
     expect(cols.map((c) => c.name).sort()).toEqual(
-      ['activity_id', 'distance_m', 'duration_s', 'idx', 'kind'].sort(),
+      ['activity_id', 'distance_m', 'duration_s', 'hr', 'idx', 'kind'].sort(),
     );
   });
 });

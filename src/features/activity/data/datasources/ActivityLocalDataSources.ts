@@ -34,7 +34,6 @@ export class ActivityLocalDataSource {
     }
 
     async upsert(row: ActivityRow, segmentRows: SegmentRow[]): Promise<void> {
-        try {
         await this.db.transaction(async tx => {
             await tx.execute(
                 `INSERT INTO activities
@@ -62,9 +61,6 @@ export class ActivityLocalDataSource {
                 );
             }
         });
-    } catch(e) {
-        console.log(e);
-    }
     }
 
     async deleteById(id: string): Promise<void> {

@@ -2,7 +2,7 @@ export interface Segment {
     index: number;          // 1부터 시작
     distanceMeters: number;
     durationSeconds: number;
-    heartRate: number;
+    heartRate?: number;
 }
 
 export type SegmentKind = 'split' | 'lap';  //split => 자동분할 / lap => 수동 랩
@@ -125,8 +125,13 @@ export function segmentSummary(view: SegmentView | null): SegmentSummary | null 
 
     const durationSum = segments.reduce((a, b) => a + b.durationSeconds, 0);
     const distanceSum = segments.reduce((a, b) => a + b.distanceMeters, 0);
-    const highestHr = segments.reduce((a, b) => a > b.heartRate ? a : b.heartRate, 0);
-    const heartRateSum = segments.reduce((a, b) => a + b.heartRate, 0);
+    const heartRates = segments
+        .map(s => s.heartRate)
+        .filter((hr): hr is number => hr !== undefined);
+    const highestHr = heartRates.length > 0 ? Math.max(...heartRates) : undefined;
+    const averageHr = heartRates.length > 0
+        ? Math.round(heartRates.reduce((a, b) => a + b, 0) / heartRates.length)
+        : undefined;
 
     if(fastestPace === Infinity || distanceSum <= 0) return null;
 
@@ -138,7 +143,7 @@ export function segmentSummary(view: SegmentView | null): SegmentSummary | null 
         averagePace: durationSum / distanceSum * 1000,
         spread: slowestPace - fastestPace,
         highestHr: highestHr,
-        averageHr: Math.round(heartRateSum / view.segments.length),
+        averageHr: averageHr,
     };
 
 }
