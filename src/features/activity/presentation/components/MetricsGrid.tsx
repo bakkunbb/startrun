@@ -29,9 +29,10 @@ export function MetricsGrid({
     return (
         <View style={styles.metricsGrid}>
             <MetricCard label="시간" value={formatDuration(activity.durationSeconds)} />
-            <MetricCard label="평균 페이스" value={`${formatPace(paceSecPerKm(activity))}/km`} />
+            <MetricCard label="평균 페이스" value={`${formatPace(paceSecPerKm(activity))} /km`} />
             {summary ? <MetricCard label={fastestLabel} value={formatPace(summary.fastestPace)} /> : null}
-            {activity.calories !== undefined ? <MetricCard label="칼로리" value={`${activity.calories}`} /> : null}
+            {activity.heartRate !== undefined ? <MetricCard label="심박수" value={`${activity.heartRate} bpm`} /> : null}
+            {activity.calories !== undefined ? <MetricCard label="칼로리" value={`${activity.calories} kcal`} /> : null}
         </View>
     );
 }
@@ -44,8 +45,8 @@ const styles = StyleSheet.create({
         marginHorizontal: spacing.lg,
     },
     metricCard: {
-        flexBasis: '47%',
-        flexGrow: 1,
+        flexBasis: '48%',
+        flexGrow: 0,
         backgroundColor: colors.card,
         borderRadius: radius.md,
         padding: spacing.md,
