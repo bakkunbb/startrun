@@ -13,7 +13,6 @@ export function DetailHeader({ activity }: { activity: Activity }) {
             </Text>
             <Text style={styles.subtitle}>
                 {formatDatetime(activity.startedAt)}
-                {activity.heartRate !== undefined ? ` · 평균 ${activity.heartRate}bpm` : ''}
             </Text>
         </View>
     );
