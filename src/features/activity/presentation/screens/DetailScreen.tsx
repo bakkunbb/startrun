@@ -1,4 +1,4 @@
-import { ActivityIndicator, Alert, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Share, StyleSheet, Text, View } from "react-native";
 import { useActivity } from "../hooks/useActivity";
 import { primarySegments } from "../../domain/entities/Activity";
 import { segmentSummary } from "../../domain/entities/Segment";
@@ -9,16 +9,20 @@ import { useDeleteActivity } from "../hooks/useDeleteActivity";
 import { RootStackParamList } from "@/app/navigation/RootNavigator";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useCallback, useLayoutEffect, } from "react";
+import { useCallback, useLayoutEffect, useRef, } from "react";
 import { HeaderDeleteButton } from "../components/HeaderDeleteButton";
 import { EmptyState } from "@/core/ui/EmptyState";
 import { DetailHeader } from "../components/DetailHeader";
 import { MetricsGrid } from "../components/MetricsGrid";
 import { PaceBarChart } from "../components/PaceBarChart";
 import { colors, spacing } from "@/app/theme";
+import ViewShot, { ViewShotRef } from "react-native-view-shot";
+import ContextMenu from "react-native-context-menu-view";
 
 export function DetailScreen({ route }: { route: any }) {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const summaryRef = useRef<ViewShotRef>(null);
+    const segmentRef = useRef<ViewShotRef>(null);
 
     const { id } = route.params;
     const { data: activity, isPending, isError, refetch } = useActivity(id);
@@ -80,21 +84,57 @@ export function DetailScreen({ route }: { route: any }) {
     const view = primarySegments(activity);
     const summary = segmentSummary(view);
 
+    const fileName = `startrun_${new Date().toISOString()}`;
+
     return (
         <KeyboardAwareScrollView contentContainerStyle={styles.content} bottomOffset={24}>
-            <DetailHeader activity={activity} />
-            <MetricsGrid activity={activity} view={view} summary={summary} />
+            <View>
+                <ContextMenu
+                    actions={[
+                        { title: '요약 저장하기', systemIcon: "square.and.arrow.up" },
+                    ]}
+                    onPress={(e) => {
+                        if (e.nativeEvent.index === 0) {
+                            summaryRef.current?.capture().then((uri: string) => {
+                                Share.share({ url: uri });
+                            })
+                        }
+                    }}>
+                    <ViewShot
+                        ref={summaryRef}
+                        options={{ fileName: fileName, format: "png", quality: 1 }}
+                        style={styles.summaryCapture}
+                    >
+                        <DetailHeader activity={activity} />
+                        <MetricsGrid activity={activity} view={view} summary={summary} />
+                    </ViewShot>
 
+                </ContextMenu>
+            </View>
             {view ? (
                 <View style={styles.segmentSection}>
                     <Text style={styles.segmentSectionLabel}>구간 기록</Text>
                     <PaceBarChart view={view} summary={summary} />
-                    <SegmentTable view={view} />
+                    <ContextMenu
+                        actions={[
+                            { title: '구간기록 저정하기', systemIcon: "square.and.arrow.up" },
+                        ]}
+                        onPress={(e) => {
+                            if (e.nativeEvent.index === 0) {
+                                segmentRef.current?.capture().then((uri: string) => {
+                                    Share.share({ url: uri });
+                                })
+                            }
+                        }}
+                    >
+                        <ViewShot ref={segmentRef} style={styles.tableSection} options={{ fileName: fileName, format: "png", quality: 1.0 }}>
+                            <SegmentTable view={view} />
+                        </ViewShot>
+                    </ContextMenu>
                 </View>
             ) : null}
-
             <NoteEditor id={id} activityNote={activity.note} />
-        </KeyboardAwareScrollView>
+        </KeyboardAwareScrollView >
     );
 }
 
@@ -106,9 +146,20 @@ const styles = StyleSheet.create({
         padding: 24,
         gap: 12,
     },
-    content: { paddingVertical: spacing.lg, gap: spacing.md },
+    content: {
+        paddingBottom: spacing.lg,
+        gap: spacing.md
+    },
+    summaryCapture: {
+        padding: spacing.lg,
+        borderRadius: 12,
+    },
     segmentSection: {
         marginTop: spacing.sm,
+    },
+    tableSection: {
+        margin: spacing.lg,
+        borderRadius: 12,
     },
     segmentSectionLabel: {
         fontSize: 14,

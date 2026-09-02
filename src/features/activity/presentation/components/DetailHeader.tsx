@@ -19,7 +19,10 @@ export function DetailHeader({ activity }: { activity: Activity }) {
 }
 
 const styles = StyleSheet.create({
-    header: { paddingHorizontal: spacing.lg, gap: spacing.xs },
+    header: {
+        gap: spacing.xs,
+        marginBottom: spacing.md
+    },
     distance: {
         ...typography.display,
         color: colors.text,
