@@ -1,4 +1,4 @@
-import { ActivityIndicator, Alert, Share, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, PermissionsAndroid, Platform, StyleSheet, Text, View } from "react-native";
 import { useActivity } from "../hooks/useActivity";
 import { primarySegments } from "../../domain/entities/Activity";
 import { segmentSummary } from "../../domain/entities/Segment";
@@ -18,6 +18,8 @@ import { PaceBarChart } from "../components/PaceBarChart";
 import { colors, spacing } from "@/app/theme";
 import ViewShot, { ViewShotRef } from "react-native-view-shot";
 import ContextMenu from "react-native-context-menu-view";
+import { CameraRoll } from "@react-native-camera-roll/camera-roll";
+import Toast from "react-native-toast-message";
 
 export function DetailScreen({ route }: { route: any }) {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -96,7 +98,8 @@ export function DetailScreen({ route }: { route: any }) {
                     onPress={(e) => {
                         if (e.nativeEvent.index === 0) {
                             summaryRef.current?.capture().then((uri: string) => {
-                                Share.share({ url: uri });
+                                saveToGallery(uri, 'summary');
+                                // CameraRoll.saveAsset(uri, { type: "photo" })
                             })
                         }
                     }}>
@@ -117,12 +120,13 @@ export function DetailScreen({ route }: { route: any }) {
                     <PaceBarChart view={view} summary={summary} />
                     <ContextMenu
                         actions={[
-                            { title: '구간기록 저정하기', systemIcon: "square.and.arrow.up" },
+                            { title: '구간기록 저장하기', systemIcon: "square.and.arrow.up" },
                         ]}
                         onPress={(e) => {
                             if (e.nativeEvent.index === 0) {
                                 segmentRef.current?.capture().then((uri: string) => {
-                                    Share.share({ url: uri });
+                                    saveToGallery(uri, 'segment');
+                                    // CameraRoll.saveAsset(uri, { type: "photo" })
                                 })
                             }
                         }}
@@ -136,6 +140,46 @@ export function DetailScreen({ route }: { route: any }) {
             <NoteEditor id={id} activityNote={activity.note} />
         </KeyboardAwareScrollView >
     );
+}
+
+async function hasAndroidPermission() {
+    if (Platform.OS !== 'android') return true;
+
+    const permission = Platform.Version >= 33
+        ? PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
+        : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
+
+    if (await PermissionsAndroid.check(permission)) return true;
+    return (await PermissionsAndroid.request(permission) === PermissionsAndroid.RESULTS.GRANTED);
+}
+
+async function saveToGallery(uri: string, type: string) {
+    if (await hasAndroidPermission()) {
+        Toast.show({
+            type: 'error',
+            text1: '이미지 저장 권한이 필요합니다',
+        });
+    }
+
+    try {
+        await CameraRoll.saveAsset(uri, { type: "photo" });
+        if (type === 'summary') {
+            Toast.show({
+                type: 'success',
+                text1: '요약 이미지를 저장했습니다',
+            });
+        } else {
+            Toast.show({
+                type: 'success',
+                text1: '구간 기록 이미지를 저장했습니다',
+            });
+        }
+    } catch {
+        Toast.show({
+            type: 'error',
+            text1: '이미지를 저장할 수 없습니다',
+        });
+    }
 }
 
 const styles = StyleSheet.create({
