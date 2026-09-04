@@ -99,7 +99,6 @@ export function DetailScreen({ route }: { route: any }) {
                         if (e.nativeEvent.index === 0) {
                             summaryRef.current?.capture().then((uri: string) => {
                                 saveToGallery(uri, 'summary');
-                                // CameraRoll.saveAsset(uri, { type: "photo" })
                             })
                         }
                     }}>
@@ -126,12 +125,11 @@ export function DetailScreen({ route }: { route: any }) {
                             if (e.nativeEvent.index === 0) {
                                 segmentRef.current?.capture().then((uri: string) => {
                                     saveToGallery(uri, 'segment');
-                                    // CameraRoll.saveAsset(uri, { type: "photo" })
                                 })
                             }
                         }}
                     >
-                        <ViewShot ref={segmentRef} style={styles.tableSection} options={{ fileName: fileName, format: "png", quality: 1.0 }}>
+                        <ViewShot ref={segmentRef} style={styles.segmentCapture} options={{ fileName: fileName, format: "png", quality: 1.0 }}>
                             <SegmentTable view={view} />
                         </ViewShot>
                     </ContextMenu>
@@ -201,7 +199,7 @@ const styles = StyleSheet.create({
     segmentSection: {
         marginTop: spacing.sm,
     },
-    tableSection: {
+    segmentCapture: {
         margin: spacing.lg,
         borderRadius: 12,
     },

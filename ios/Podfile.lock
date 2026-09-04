@@ -2195,28 +2195,6 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - RNShare (12.3.1):
-    - hermes-engine
-    - RCTRequired
-    - RCTTypeSafety
-    - React-Core
-    - React-Core-prebuilt
-    - React-debug
-    - React-Fabric
-    - React-featureflags
-    - React-graphics
-    - React-ImageManager
-    - React-jsi
-    - React-NativeModulesApple
-    - React-RCTFabric
-    - React-renderercss
-    - React-rendererdebug
-    - React-utils
-    - ReactCodegen
-    - ReactCommon/turbomodule/bridging
-    - ReactCommon/turbomodule/core
-    - ReactNativeDependencies
-    - Yoga
   - RNWorklets (0.11.4):
     - hermes-engine
     - RCTRequired
@@ -2376,7 +2354,6 @@ DEPENDENCIES:
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
-  - RNShare (from `../node_modules/react-native-share`)
   - RNWorklets (from `../node_modules/react-native-worklets`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -2550,8 +2527,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
-  RNShare:
-    :path: "../node_modules/react-native-share"
   RNWorklets:
     :path: "../node_modules/react-native-worklets"
   Yoga:
@@ -2642,7 +2617,6 @@ SPEC CHECKSUMS:
   RNDateTimePicker: c33c46d089998652b576a58ac08108db8c9af6f1
   RNReanimated: 5cc36a25f9e60c523734a60783f84d363e73b4dc
   RNScreens: 39f914a099f9cbe0ec2c33d0dfd01ba56a8ca104
-  RNShare: 43cee010ada075019148c7a6bac1ca71b074e1d7
   RNWorklets: 7009adab82cd815153f9470423e42771b3a6b610
   Yoga: 8cf9dd9fc7761e176a3361b4821d26d11cfbeab1
 
