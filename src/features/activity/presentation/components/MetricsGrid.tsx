@@ -13,26 +13,24 @@ function MetricCard({ label, value }: { label: string; value: string }) {
     );
 }
 
-export function MetricsGrid({
-    activity,
-    view,
-    summary,
-}: {
-    activity: Activity;
-    view: SegmentView | null;
-    summary: SegmentSummary | null;
-}) {
+export function MetricsGrid({ activity, view, summary, }: { activity: Activity; view: SegmentView | null; summary: SegmentSummary | null; }) {
     const fastestLabel = view?.kind === 'split'
         ? `가장 빠른 ${view.unitMeters >= 1600 ? '1마일' : '1km'}`
         : '가장 빠른 랩';
 
+    const cards: { label: string; value: string }[] = [
+        { label: '시간', value: formatDuration(activity.durationSeconds) },
+        { label: '평균 페이스', value: `${formatPace(paceSecPerKm(activity))} /km` },
+    ];
+
+    if (summary) cards.push({ label: fastestLabel, value: formatPace(summary.fastestPace) });
+    if (activity.heartRate !== undefined) cards.push({ label: '심박수', value: `${activity.heartRate} bpm` });
+    if (activity.calories !== undefined) cards.push({ label: '칼로리', value: `${activity.calories} kcal` });
+
     return (
         <View style={styles.metricsGrid}>
-            <MetricCard label="시간" value={formatDuration(activity.durationSeconds)} />
-            <MetricCard label="평균 페이스" value={`${formatPace(paceSecPerKm(activity))} /km`} />
-            {summary ? <MetricCard label={fastestLabel} value={formatPace(summary.fastestPace)} /> : null}
-            {activity.heartRate !== undefined ? <MetricCard label="심박수" value={`${activity.heartRate} bpm`} /> : null}
-            {activity.calories !== undefined ? <MetricCard label="칼로리" value={`${activity.calories} kcal`} /> : null}
+            {cards.map((c) => <MetricCard key={c.label} label={c.label} value={c.value} />)}
+            {cards.length % 2 !== 0 ? <View style={styles.metricCardPlaceholder} /> : null}
         </View>
     );
 }
@@ -42,15 +40,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         gap: spacing.sm,
-        marginHorizontal: spacing.lg,
     },
     metricCard: {
         flexBasis: '48%',
-        flexGrow: 0,
+        flexGrow: 1,
         backgroundColor: colors.card,
         borderRadius: radius.md,
         padding: spacing.md,
         gap: 4,
+    },
+    metricCardPlaceholder: {
+        flexBasis: '48%',
+        flexGrow: 1,
     },
     metricLabel: {
         fontSize: 13,

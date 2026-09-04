@@ -1,4 +1,4 @@
-import { ActivityIndicator, Alert, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, PermissionsAndroid, Platform, StyleSheet, Text, View } from "react-native";
 import { useActivity } from "../hooks/useActivity";
 import { primarySegments } from "../../domain/entities/Activity";
 import { segmentSummary } from "../../domain/entities/Segment";
@@ -9,16 +9,22 @@ import { useDeleteActivity } from "../hooks/useDeleteActivity";
 import { RootStackParamList } from "@/app/navigation/RootNavigator";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useCallback, useLayoutEffect, } from "react";
+import { useCallback, useLayoutEffect, useRef, } from "react";
 import { HeaderDeleteButton } from "../components/HeaderDeleteButton";
 import { EmptyState } from "@/core/ui/EmptyState";
 import { DetailHeader } from "../components/DetailHeader";
 import { MetricsGrid } from "../components/MetricsGrid";
 import { PaceBarChart } from "../components/PaceBarChart";
 import { colors, spacing } from "@/app/theme";
+import ViewShot, { ViewShotRef } from "react-native-view-shot";
+import ContextMenu from "react-native-context-menu-view";
+import { CameraRoll } from "@react-native-camera-roll/camera-roll";
+import Toast from "react-native-toast-message";
 
 export function DetailScreen({ route }: { route: any }) {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const summaryRef = useRef<ViewShotRef>(null);
+    const segmentRef = useRef<ViewShotRef>(null);
 
     const { id } = route.params;
     const { data: activity, isPending, isError, refetch } = useActivity(id);
@@ -80,22 +86,98 @@ export function DetailScreen({ route }: { route: any }) {
     const view = primarySegments(activity);
     const summary = segmentSummary(view);
 
+    const fileName = `startrun_${new Date().toISOString()}`;
+
     return (
         <KeyboardAwareScrollView contentContainerStyle={styles.content} bottomOffset={24}>
-            <DetailHeader activity={activity} />
-            <MetricsGrid activity={activity} view={view} summary={summary} />
+            <View>
+                <ContextMenu
+                    actions={[
+                        { title: '요약 저장하기', systemIcon: "square.and.arrow.up" },
+                    ]}
+                    onPress={(e) => {
+                        if (e.nativeEvent.index === 0) {
+                            summaryRef.current?.capture().then((uri: string) => {
+                                saveToGallery(uri, 'summary');
+                            })
+                        }
+                    }}>
+                    <ViewShot
+                        ref={summaryRef}
+                        options={{ fileName: fileName, format: "png", quality: 1 }}
+                        style={styles.summaryCapture}
+                    >
+                        <DetailHeader activity={activity} />
+                        <MetricsGrid activity={activity} view={view} summary={summary} />
+                    </ViewShot>
 
+                </ContextMenu>
+            </View>
             {view ? (
                 <View style={styles.segmentSection}>
                     <Text style={styles.segmentSectionLabel}>구간 기록</Text>
                     <PaceBarChart view={view} summary={summary} />
-                    <SegmentTable view={view} />
+                    <ContextMenu
+                        actions={[
+                            { title: '구간기록 저장하기', systemIcon: "square.and.arrow.up" },
+                        ]}
+                        onPress={(e) => {
+                            if (e.nativeEvent.index === 0) {
+                                segmentRef.current?.capture().then((uri: string) => {
+                                    saveToGallery(uri, 'segment');
+                                })
+                            }
+                        }}
+                    >
+                        <ViewShot ref={segmentRef} style={styles.segmentCapture} options={{ fileName: fileName, format: "png", quality: 1.0 }}>
+                            <SegmentTable view={view} />
+                        </ViewShot>
+                    </ContextMenu>
                 </View>
             ) : null}
-
             <NoteEditor id={id} activityNote={activity.note} />
-        </KeyboardAwareScrollView>
+        </KeyboardAwareScrollView >
     );
+}
+
+async function hasAndroidPermission() {
+    if (Platform.OS !== 'android') return true;
+
+    const permission = Platform.Version >= 33
+        ? PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
+        : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
+
+    if (await PermissionsAndroid.check(permission)) return true;
+    return (await PermissionsAndroid.request(permission) === PermissionsAndroid.RESULTS.GRANTED);
+}
+
+async function saveToGallery(uri: string, type: string) {
+    if (await hasAndroidPermission()) {
+        Toast.show({
+            type: 'error',
+            text1: '이미지 저장 권한이 필요합니다',
+        });
+    }
+
+    try {
+        await CameraRoll.saveAsset(uri, { type: "photo" });
+        if (type === 'summary') {
+            Toast.show({
+                type: 'success',
+                text1: '요약 이미지를 저장했습니다',
+            });
+        } else {
+            Toast.show({
+                type: 'success',
+                text1: '구간 기록 이미지를 저장했습니다',
+            });
+        }
+    } catch {
+        Toast.show({
+            type: 'error',
+            text1: '이미지를 저장할 수 없습니다',
+        });
+    }
 }
 
 const styles = StyleSheet.create({
@@ -106,9 +188,20 @@ const styles = StyleSheet.create({
         padding: 24,
         gap: 12,
     },
-    content: { paddingVertical: spacing.lg, gap: spacing.md },
+    content: {
+        paddingBottom: spacing.lg,
+        gap: spacing.md
+    },
+    summaryCapture: {
+        padding: spacing.lg,
+        borderRadius: 12,
+    },
     segmentSection: {
         marginTop: spacing.sm,
+    },
+    segmentCapture: {
+        margin: spacing.lg,
+        borderRadius: 12,
     },
     segmentSectionLabel: {
         fontSize: 14,

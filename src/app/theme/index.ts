@@ -109,6 +109,7 @@ export const layout = {
   screenPadding: spacing.lg,
   formLabelWidth: 72,
   formUnitWidth: 32,
+  toastHeight: 48,
 };
 
 /** 작은 아이콘 버튼의 반응 영역 확장 */

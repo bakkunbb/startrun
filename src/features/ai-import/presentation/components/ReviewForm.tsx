@@ -12,7 +12,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSaveImported } from "../hooks/useSaveImported";
 import { useDuplicateCheck } from "../hooks/useDuplicateCheck";
 import { formatDistanceKm, formatMonthDay } from "@/core/utils/format";
-import { colors } from "@/app/theme";
+import { colors, spacing } from "@/app/theme";
 import { ExtractionDto } from "../../data/models/ExtractionDto";
 
 const WARNING_MESSAGES: Record<ExtractionWarning, string> = {
@@ -123,7 +123,12 @@ export function ReviewForm({ dto, onLeave }: { dto: ExtractionDto; onLeave: () =
                         </View>
                     ) : null}
                     {basisText ? <Text style={styles.basisHint}>{basisText}</Text> : null}
-                    {view ? <SegmentTable view={view} /> : null}
+                    {view ?
+                        <View style={[{ padding: spacing.lg }]}>
+                            <SegmentTable view={view} />
+                        </View>
+                        : null
+                    }
                 </View >
             </ScrollView>
             <View style={[styles.bar, { paddingBottom: insets.bottom + 12 }]}>
@@ -146,7 +151,7 @@ export function ReviewForm({ dto, onLeave }: { dto: ExtractionDto; onLeave: () =
                     }
                 </Pressable>
             </View>
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingView >
     );
 }
 
