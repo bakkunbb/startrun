@@ -1,9 +1,11 @@
 import { formatDistanceKm, formatDuration, formatPace } from "@/core/utils/format";
 import { fastestSegment, isRemainder, segmentPaceSecPerKm, SegmentView } from "../../domain/entities/Segment";
 import { StyleSheet, Text, View } from "react-native";
-import { colors, spacing, tabularNums } from "@/app/theme";
+import { spacing, tabularNums, ThemeColors, useStyles } from "@/app/theme";
 
 export function SegmentTable({ view }: { view: SegmentView }) {
+    const styles = useStyles(createStyles);
+
     const fastest = fastestSegment(view);
 
     const title = view.kind === 'split'
@@ -52,7 +54,7 @@ export function SegmentTable({ view }: { view: SegmentView }) {
     )
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
     wrap: {
         backgroundColor: colors.card,
         borderRadius: 12,

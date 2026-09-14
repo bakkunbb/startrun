@@ -1,9 +1,11 @@
 import { StyleSheet, Text, View } from "react-native";
 import { PeriodSummary } from "../../domain/periodSummary";
 import { formatDistanceKm, formatPace } from "@/core/utils/format";
-import { colors, radius, spacing, typography } from "@/app/theme";
+import { radius, spacing, ThemeColors, typography, useStyles } from "@/app/theme";
 
 function SummaryCard({ label, value }: { label: string, value: string }) {
+    const styles = useStyles(createStyles);
+
     return (
         <View style={styles.summaryCard}>
             <Text style={styles.label}>{label}</Text>
@@ -13,6 +15,8 @@ function SummaryCard({ label, value }: { label: string, value: string }) {
 }
 
 export function WeeklySummaryStrip({ summary }: { summary: PeriodSummary }) {
+    const styles = useStyles(createStyles);
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>This week</Text>
@@ -25,7 +29,7 @@ export function WeeklySummaryStrip({ summary }: { summary: PeriodSummary }) {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
     container: {
         marginHorizontal: spacing.md,
         marginTop: spacing.sm,

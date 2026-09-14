@@ -3,11 +3,12 @@ import { DetailScreen } from "@/features/activity/presentation/screens/DetailScr
 import ReviewScreen from "@/features/ai-import/presentation/screens/ReviewScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { colors } from "@/app/theme";
+import { useColors } from "@/app/theme";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StatsScreen } from "@/features/activity/presentation/screens/StatsScreen";
 import { ChartLine, List, } from "lucide-react-native";
 import { StyleSheet } from "react-native";
+import { useMemo } from "react";
 
 export type TabsParamList = {
     RecordTab: undefined;
@@ -23,35 +24,33 @@ export type RootStackParamList = {
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabsParamList>();
 
-const headerOptions = {
-    headerStyle: { backgroundColor: colors.bg },
-    headerShadowVisible: true,
-    headerTitleStyle: { fontSize: 17, fontWeight: '500' as const, color: colors.text },
-    headerTintColor: colors.accent,
-    headerBackButtonDisplayMode: 'minimal' as const,
-};
+function useHeaderOptions() {
+    const colors = useColors();
 
-const stackScreenOptions = {
-    ...headerOptions,
-    contentStyle: { backgroundColor: colors.bg },
-}
-
-const tabBarStyle = {
-    backgroundColor: colors.bg,
-    borderTopColor: colors.divider,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    shadowColor: colors.shadow,
-    shadowOpacity: 0.15,
-    shadowOffset: { width: 0, height: -1 },
-    shadowRadius: 2,
-    elevation: 4,
-}
-
-function tabIconColor(focused: boolean) {
-    return focused ? colors.accent : colors.textMuted;
+    return useMemo(() => ({
+        headerStyle: { backgroundColor: colors.bg },
+        headerShadowVisible: true,
+        headerTitleStyle: { fontSize: 17, fontWeight: '500' as const, color: colors.text },
+        headerTintColor: colors.accent,
+        headerBackButtonDisplayMode: 'minimal' as const,
+    }), [colors]);
 }
 
 function TabNavigator() {
+    const colors = useColors();
+    const headerOptions = useHeaderOptions();
+
+    const tabBarStyle = useMemo(() => ({
+        backgroundColor: colors.bg,
+        borderTopColor: colors.divider,
+        borderTopWidth: StyleSheet.hairlineWidth,
+        shadowColor: colors.shadow,
+        shadowOpacity: 0.15,
+        shadowOffset: { width: 0, height: -1 },
+        shadowRadius: 2,
+        elevation: 4,
+    }), [colors])
+
     return (
         <Tab.Navigator
             screenOptions={{
@@ -67,7 +66,9 @@ function TabNavigator() {
                 component={ActivityListScreen}
                 options={{
                     title: '기록',
-                    tabBarIcon: ({ focused, size }) => <List color={tabIconColor(focused)} size={size} />
+                    tabBarIcon: ({ focused, size }) => (
+                        <List color={focused ? colors.accent : colors.textMuted} size={size} />
+                    )
                 }}
             />
             <Tab.Screen
@@ -75,7 +76,9 @@ function TabNavigator() {
                 component={StatsScreen}
                 options={{
                     title: '통계',
-                    tabBarIcon: ({ focused, size }) => <ChartLine color={tabIconColor(focused)} size={size} />
+                    tabBarIcon: ({ focused, size }) => (
+                        <ChartLine color={focused ? colors.accent : colors.textMuted} size={size} />
+                    )
                 }}
             />
         </Tab.Navigator>
@@ -83,6 +86,14 @@ function TabNavigator() {
 }
 
 export function RootNavigator() {
+    const colors = useColors();
+    const headerOptions = useHeaderOptions();
+
+    const stackScreenOptions = useMemo(() => ({
+        ...headerOptions,
+        contentStyle: { backgroundColor: colors.bg },
+    }), [headerOptions, colors]);
+
     return (
         <NavigationContainer>
             <RootStack.Navigator screenOptions={stackScreenOptions}>

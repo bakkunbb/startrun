@@ -15,16 +15,49 @@ import { EmptyState } from "@/core/ui/EmptyState";
 import { DetailHeader } from "../components/DetailHeader";
 import { MetricsGrid } from "../components/MetricsGrid";
 import { PaceBarChart } from "../components/PaceBarChart";
-import { colors, spacing } from "@/app/theme";
+import { spacing, ThemeColors, useStyles } from "@/app/theme";
 import ViewShot, { ViewShotRef } from "react-native-view-shot";
 import ContextMenu from "react-native-context-menu-view";
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 import Toast from "react-native-toast-message";
 
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
+    center: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 24,
+        gap: 12,
+    },
+    content: {
+        paddingBottom: spacing.lg,
+        gap: spacing.md,
+    },
+    summaryCapture: {
+        padding: spacing.lg,
+        borderRadius: 12,
+    },
+    segmentSection: {
+        marginTop: spacing.sm,
+    },
+    segmentCapture: {
+        margin: spacing.lg,
+        borderRadius: 12,
+    },
+    segmentSectionLabel: {
+        fontSize: 14,
+        color: colors.textMuted,
+        marginHorizontal: spacing.lg,
+        marginBottom: spacing.xs,
+    },
+});
+
 export function DetailScreen({ route }: { route: any }) {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const summaryRef = useRef<ViewShotRef>(null);
     const segmentRef = useRef<ViewShotRef>(null);
+
+    const styles = useStyles(createStyles);
 
     const { id } = route.params;
     const { data: activity, isPending, isError, refetch } = useActivity(id);
@@ -180,34 +213,3 @@ async function saveToGallery(uri: string, type: string) {
         });
     }
 }
-
-const styles = StyleSheet.create({
-    center: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 24,
-        gap: 12,
-    },
-    content: {
-        paddingBottom: spacing.lg,
-        gap: spacing.md
-    },
-    summaryCapture: {
-        padding: spacing.lg,
-        borderRadius: 12,
-    },
-    segmentSection: {
-        marginTop: spacing.sm,
-    },
-    segmentCapture: {
-        margin: spacing.lg,
-        borderRadius: 12,
-    },
-    segmentSectionLabel: {
-        fontSize: 14,
-        color: colors.textMuted,
-        marginHorizontal: spacing.lg,
-        marginBottom: spacing.xs,
-    },
-});

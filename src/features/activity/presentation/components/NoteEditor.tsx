@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useUpdateNote } from "../hooks/useUpdateNote";
 import { Alert, Keyboard, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { colors } from "@/app/theme";
+import { ThemeColors, useColors, useStyles } from "@/app/theme";
 
 export function NoteEditor({ id, activityNote }: { id: string; activityNote: string | undefined }) {
+    const styles = useStyles(createStyles);
+    const colors = useColors();
+
     const updateNote = useUpdateNote();
     const [note, setNote] = useState(activityNote ?? '');
 
@@ -62,7 +65,7 @@ export function NoteEditor({ id, activityNote }: { id: string; activityNote: str
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
     wrap: {
         marginHorizontal: 16,
         marginTop: 12,

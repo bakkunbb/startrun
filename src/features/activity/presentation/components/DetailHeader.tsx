@@ -2,9 +2,11 @@ import { StyleSheet, Text, View } from "react-native";
 import { Activity } from "../../domain/entities/Activity";
 import { formatDatetime, formatDistanceKm } from "@/core/utils/format";
 import { SourceBadge } from "./SourceBadge";
-import { colors, spacing, typography } from "@/app/theme";
+import { spacing, ThemeColors, typography, useStyles } from "@/app/theme";
 
 export function DetailHeader({ activity }: { activity: Activity }) {
+    const styles = useStyles(createStyles);
+
     return (
         <View style={styles.header}>
             <SourceBadge source={activity.source} />
@@ -18,7 +20,7 @@ export function DetailHeader({ activity }: { activity: Activity }) {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
     header: {
         gap: spacing.xs,
         marginBottom: spacing.md

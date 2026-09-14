@@ -1,3 +1,4 @@
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { Appearance } from 'react-native';
 import type { TextStyle } from 'react-native';
 
@@ -92,7 +93,34 @@ const darkColors: typeof lightColors = {
   shadow: '#000000',
 };
 
-export const colors = Appearance.getColorScheme() === 'dark' ? darkColors : lightColors;
+// export const colors = Appearance.getColorScheme() === 'dark' ? darkColors : lightColors;
+
+export type ThemeColors = typeof lightColors;
+
+const ThemeContext = createContext<ThemeColors>(
+  Appearance.getColorScheme() === 'dark' ? darkColors : lightColors,
+);
+
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [scheme, setScheme] = useState(Appearance.getColorScheme());
+
+  useEffect(() => {
+    const sub = Appearance.addChangeListener(({ colorScheme }) => setScheme(colorScheme));
+    return () => sub.remove();
+  }, []);
+
+  const colors = useMemo<ThemeColors>(
+    () => (scheme === 'dark' ? darkColors : lightColors),
+    [scheme],
+  );
+
+  return <ThemeContext.Provider value={colors}>{children}</ThemeContext.Provider>;
+}
+
+/** 화면·컴포넌트에서 이 훅으로 현재 테마 색을 받는다 (기존 `colors` 정적 객체를 대체) */
+export function useColors() {
+  return useContext(ThemeContext);
+}
 
 export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 };
 
@@ -137,3 +165,8 @@ export const typography = {
 
 /** 표의 숫자 폭 고정 — 없으면 1과 8의 너비가 달라 세로줄이 어긋난다 */
 export const tabularNums = { fontVariant: ['tabular-nums'] } satisfies TextStyle;
+
+export function useStyles<T>(factory: (colors: ThemeColors) => T): T {
+  const colors = useColors();
+  return useMemo(() => factory(colors), [colors, factory]);
+}

@@ -1,7 +1,8 @@
-import { colors } from "@/app/theme";
+import { ThemeColors, useStyles } from "@/app/theme";
 import { Pressable, StyleSheet, Text } from "react-native";
 
 export function HeaderDeleteButton({ onPress }: { onPress: () => void }) {
+    const styles = useStyles(createStyles);
     return (
         <Pressable
             onPress={onPress}
@@ -12,7 +13,7 @@ export function HeaderDeleteButton({ onPress }: { onPress: () => void }) {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
     headerButton: {
         paddingHorizontal: 8,
         paddingVertical: 4,

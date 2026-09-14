@@ -1,8 +1,9 @@
 import { StyleSheet, View } from "react-native";
 import { fastestSegment, isRemainder, segmentPaceSecPerKm, SegmentSummary, SegmentView } from "../../domain/entities/Segment";
-import { colors, spacing } from "@/app/theme";
+import { spacing, ThemeColors, useStyles } from "@/app/theme";
 
 export function PaceBarChart({ view, summary }: { view: SegmentView; summary: SegmentSummary | null }) {
+    const styles = useStyles(createStyles);
     if (view.segments.length <= 1) return null;
 
     const fastest = fastestSegment(view);
@@ -35,7 +36,7 @@ export function PaceBarChart({ view, summary }: { view: SegmentView; summary: Se
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
     barRow: {
         flexDirection: 'row',
         alignItems: 'flex-end',
