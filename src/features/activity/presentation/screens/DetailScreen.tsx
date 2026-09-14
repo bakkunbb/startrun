@@ -152,11 +152,12 @@ async function hasAndroidPermission() {
 }
 
 async function saveToGallery(uri: string, type: string) {
-    if (await hasAndroidPermission()) {
+    if (!(await hasAndroidPermission())) {
         Toast.show({
             type: 'error',
             text1: '이미지 저장 권한이 필요합니다',
         });
+        return;
     }
 
     try {
