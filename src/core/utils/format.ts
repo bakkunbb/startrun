@@ -1,3 +1,5 @@
+import { Period, PeriodUnit } from "@/features/activity/domain/period";
+
 export function formatDistanceKm(meters: number): string {
     return (meters / 1000).toFixed(2);
 }
@@ -44,4 +46,38 @@ export function formatDatetime(d: Date): string {
 
 export function padNumber(num: number): string {
     return num.toString().padStart(2, '0');
+}
+
+/** '2026년 8월' */
+export function formatYearMonth(date: Date): string {
+    return `${date.getFullYear()}년 ${date.getMonth() + 1}월`;
+}
+
+/** 그래프 막대 아래 라벨. 주간=요일 한 글자, 월간=주 시작일 */
+export function formatBucketLabel(start: Date, unit: PeriodUnit): string {
+    if(unit === 'week') {
+        const week: string[] = ['일', '월', '화', '수', '목', '금', '토'];
+
+        return week[start.getDay()];
+    } else {
+        return `${start.getMonth() + 1}/${start.getDate()}`;
+    }
+}
+
+/** 기간 헤더 라벨 */
+export function formatPeriodLabel(period: Period, now?: Date): string {
+    now = now ?? new Date();
+    if(now.getTime() >= period.start.getTime() && now.getTime() < period.end.getTime()) {
+        return period.unit === 'week' ? '이번 주' : '이번 달';
+    }
+    
+    const endDate = new Date(period.end);
+    endDate.setDate(endDate.getDate()-1);
+    
+    if(period.unit === 'week') {
+        const isSameYear = period.start.getFullYear() !== endDate.getFullYear();
+        return `${isSameYear ? period.start.getFullYear()+'년 ' : ''}${formatMonthDay(period.start)} – ${formatMonthDay(endDate)}`;
+    } else {
+        return `${formatYearMonth(period.start)}`;
+    }
 }
