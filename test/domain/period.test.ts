@@ -148,14 +148,13 @@ describe('subBuckets', () => {
     expect(b.map((x) => x.count)).toEqual([2, 0, 0, 0, 0, 1, 0]);
   });
 
-  it('월간은 주 단위로 나누고 달 전체를 덮는다', () => {
+  it('월간은 하루 단위로 나누고 달 전체를 덮는다', () => {
     const p = periodOf(new Date('2026-08-13'), 'month'); // 8/1 ~ 9/1
     const b = subBuckets([], p);
 
-    // 8/1(토)이 속한 주는 7/27 시작 → 7/27 · 8/3 · 8/10 · 8/17 · 8/24 · 8/31
-    expect(b).toHaveLength(6);
-    expect(b[0].start.toDateString()).toBe(new Date('2026-07-27').toDateString());
-    expect(b[b.length - 1].start.getTime()).toBeLessThan(p.end.getTime());
+    expect(b).toHaveLength(31); // 8월은 31일
+    expect(b[0].start.toDateString()).toBe(new Date('2026-08-01').toDateString());
+    expect(b[b.length - 1].start.toDateString()).toBe(new Date('2026-08-31').toDateString());
   });
 
   it('기록이 없어도 구간 개수는 유지한다', () => {

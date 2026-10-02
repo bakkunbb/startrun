@@ -10,8 +10,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "start:lan": "react-native start --host 0.0.0.0",
-    "ios:device": "react-native run-ios --device",
-    "ip": "bash scripts/ip.sh"
+    "ios:device": "react-native run-ios --device"
   },
   "dependencies": {
     "@op-engineering/op-sqlite": "^17.1.5",

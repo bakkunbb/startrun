@@ -38,7 +38,7 @@ export function WeeklyBarChart({ buckets, unit }: Props) {
                         key={b.start.getTime()}
                         style={[
                             styles.label,
-                            { fontSize: unit === 'week' ? 12 : 8 }
+                            unit === 'week' ? styles.labelWeek : styles.labelMonth,
                         ]}>
                         {formatBucketLabel(b.start, unit)}
                     </Text>
@@ -81,7 +81,12 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     label: {
         flex: 1,
         textAlign: 'center',
-        // fontSize: 10,
         color: colors.textMuted,
     },
+    labelWeek: {
+        fontSize: 12,
+    },
+    labelMonth: {
+        fontSize: 8
+    }
 });
