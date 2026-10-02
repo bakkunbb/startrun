@@ -1,73 +1,58 @@
 import {
-  formatDistanceKm,
-  formatDuration,
-  formatMonthDay,
-  formatPace,
+  formatBucketLabel,
+  formatPeriodLabel,
+  formatYearMonth,
 } from '@/core/utils/format';
+import { periodOf, shiftPeriod } from '@/features/activity/domain/period';
 
-describe('formatDistanceKm', () => {
-  it('미터를 km 두 자리로 바꾼다', () => {
-    expect(formatDistanceKm(10240)).toBe('10.24');
-  });
+/** 2026-08-13은 목요일. 그 주는 8/10(월) ~ 8/16(일) */
+const NOW = new Date('2026-08-13T12:00:00');
 
-  it('끝자리 0을 유지한다', () => {
-    expect(formatDistanceKm(5300)).toBe('5.30');
-  });
-
-  it('0도 형식을 지킨다', () => {
-    expect(formatDistanceKm(0)).toBe('0.00');
-  });
-
-  it('세 자리 아래는 반올림한다', () => {
-    expect(formatDistanceKm(999)).toBe('1.00');
-    // 부동소수점 특성: 1.005는 2진수로 정확히 표현되지 않아 '1.00'이 된다
-    expect(formatDistanceKm(1005)).toBe('1.00');
-    expect(formatDistanceKm(1006)).toBe('1.01');
+describe('formatYearMonth', () => {
+  it('연도와 월을 쓴다', () => {
+    expect(formatYearMonth(new Date('2026-08-01'))).toBe('2026년 8월');
+    expect(formatYearMonth(new Date('2025-12-01'))).toBe('2025년 12월');
   });
 });
 
-describe('formatPace', () => {
-  it('초/km를 분초 표기로 바꾼다', () => {
-    expect(formatPace(308)).toBe('5\'08"');
-    expect(formatPace(300)).toBe('5\'00"');
+describe('formatBucketLabel', () => {
+  it('주간은 요일 한 글자', () => {
+    expect(formatBucketLabel(new Date('2026-08-10'), 'week')).toBe('월');
+    expect(formatBucketLabel(new Date('2026-08-16'), 'week')).toBe('일');
   });
 
-  it('10분대도 자리수가 깨지지 않는다', () => {
-    expect(formatPace(605)).toBe('10\'05"');
-  });
-
-  it('소수는 반올림한다', () => {
-    expect(formatPace(312.4)).toBe('5\'12"');
-  });
-
-  it('값이 없거나 계산 불가면 하이픈', () => {
-    expect(formatPace(null)).toBe('-');
-    expect(formatPace(undefined)).toBe('-');
-    expect(formatPace(0)).toBe('-');
-    expect(formatPace(Infinity)).toBe('-');
+  it('월간은 주 시작일', () => {
+    expect(formatBucketLabel(new Date('2026-07-27'), 'month')).toBe('7/27');
+    expect(formatBucketLabel(new Date('2026-08-03'), 'month')).toBe('8/3');
   });
 });
 
-describe('formatDuration', () => {
-  it('한 시간 미만은 분:초', () => {
-    expect(formatDuration(3151)).toBe('52:31');
-    expect(formatDuration(600)).toBe('10:00');
-    expect(formatDuration(59)).toBe('0:59');
-    expect(formatDuration(0)).toBe('0:00');
+describe('formatPeriodLabel', () => {
+  it('현재 구간은 이번 주 · 이번 달', () => {
+    expect(formatPeriodLabel(periodOf(NOW, 'week'), NOW)).toBe('이번 주');
+    expect(formatPeriodLabel(periodOf(NOW, 'month'), NOW)).toBe('이번 달');
   });
 
-  it('한 시간 이상은 시:분:초', () => {
-    expect(formatDuration(3600)).toBe('1:00:00');
-    expect(formatDuration(3661)).toBe('1:01:01');
-    expect(formatDuration(7200)).toBe('2:00:00');
-  });
-});
+  it('지난 주는 날짜 범위로 쓴다', () => {
+    const p = shiftPeriod(periodOf(NOW, 'week'), -1); // 8/3 ~ 8/9
 
-describe('formatMonthDay', () => {
-  it('월 일 형식으로 바꾼다', () => {
-    // 로컬 시간으로 생성해야 시간대와 무관하게 같은 결과가 나온다
-    expect(formatMonthDay(new Date(2026, 6, 24))).toBe('7월 24일');
-    expect(formatMonthDay(new Date(2026, 0, 1))).toBe('1월 1일');
-    expect(formatMonthDay(new Date(2026, 11, 31))).toBe('12월 31일');
+    expect(formatPeriodLabel(p, NOW)).toBe('8월 3일 – 8월 9일');
+  });
+
+  it('마지막 날은 end의 하루 전이다', () => {
+    // end는 열린 경계(8/3)이므로 표시는 8/2여야 한다
+    const p = shiftPeriod(periodOf(NOW, 'week'), -2); // 7/27 ~ 8/2
+
+    expect(formatPeriodLabel(p, NOW)).toBe('7월 27일 – 8월 2일');
+  });
+
+  it('다른 해의 주에는 연도를 한 번 붙인다', () => {
+    const p = periodOf(new Date('2025-12-30'), 'week'); // 2025/12/29 ~ 2026/1/4
+
+    expect(formatPeriodLabel(p, NOW)).toBe('2025년 12월 29일 – 1월 4일');
+  });
+
+  it('지난 달은 연월로 쓴다', () => {
+    expect(formatPeriodLabel(shiftPeriod(periodOf(NOW, 'month'), -1), NOW)).toBe('2026년 7월');
   });
 });

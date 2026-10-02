@@ -1,7 +1,9 @@
 import { Pressable, StyleSheet, Text } from "react-native";
-import { colors } from "@/app/theme";
+import { ThemeColors, useStyles } from "@/app/theme";
 
 export function HeaderAddButton({ onPress }: { onPress: () => void }) {
+    const styles = useStyles(createStyles);
+
     return (
         <Pressable
             onPress={onPress}
@@ -12,7 +14,7 @@ export function HeaderAddButton({ onPress }: { onPress: () => void }) {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
     headerButton: {
         paddingHorizontal: 8,
         paddingVertical: 4,

@@ -2,9 +2,11 @@ import { StyleSheet, Text, View } from "react-native";
 import { Activity, paceSecPerKm } from "../../domain/entities/Activity";
 import { SegmentSummary, SegmentView } from "../../domain/entities/Segment";
 import { formatDuration, formatPace } from "@/core/utils/format";
-import { colors, radius, spacing } from "@/app/theme";
+import { radius, spacing, ThemeColors, useStyles } from "@/app/theme";
 
 function MetricCard({ label, value }: { label: string; value: string }) {
+    const styles = useStyles(createStyles);
+
     return (
         <View style={styles.metricCard}>
             <Text style={styles.metricLabel}>{label}</Text>
@@ -14,6 +16,8 @@ function MetricCard({ label, value }: { label: string; value: string }) {
 }
 
 export function MetricsGrid({ activity, view, summary, }: { activity: Activity; view: SegmentView | null; summary: SegmentSummary | null; }) {
+    const styles = useStyles(createStyles);
+
     const fastestLabel = view?.kind === 'split'
         ? `가장 빠른 ${view.unitMeters >= 1600 ? '1마일' : '1km'}`
         : '가장 빠른 랩';
@@ -35,7 +39,7 @@ export function MetricsGrid({ activity, view, summary, }: { activity: Activity; 
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
     metricsGrid: {
         flexDirection: 'row',
         flexWrap: 'wrap',

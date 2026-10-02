@@ -1,5 +1,5 @@
 import { Alert, StyleSheet, View } from "react-native";
-import { colors, radius, spacing } from "@/app/theme";
+import { radius, spacing, ThemeColors, useStyles } from "@/app/theme";
 import { useEffect, useState } from "react";
 import { RootStackParamList } from "@/app/navigation/RootNavigator";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -19,6 +19,7 @@ const EXTRACTION_MESSAGES: Record<ExtractionErrorCode, { title: string; descript
 
 export default function ReviewScreen() {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const styles = useStyles(createStyles);
 
     const images = useImportStore((s) => s.images);
     const clear = useImportStore((s) => s.clear);
@@ -79,7 +80,7 @@ export default function ReviewScreen() {
     return <ReviewForm dto={extract.data} onLeave={onLeave} />;
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
     skeletonContainer: { flex: 1, padding: spacing.lg, gap: spacing.md },
     summarySkeleton: {
         height: 280,

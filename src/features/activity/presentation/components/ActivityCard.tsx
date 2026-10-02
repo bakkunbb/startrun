@@ -2,13 +2,15 @@ import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Activity, paceSecPerKm, primarySegments, SegmentBearing, } from '../../domain/entities/Activity';
 import { formatDistanceKm, formatDuration, formatMonthDay, formatPace } from '@/core/utils/format';
-import { colors, spacing, radius, typography } from '@/app/theme';
+import { spacing, radius, typography, ThemeColors, useStyles } from '@/app/theme';
 import { SourceBadge } from './SourceBadge';
 import { RootStackParamList } from '@/app/navigation/RootNavigator';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 export default function ActivityCard({ activity }: { activity: Activity }) {
+    const styles = useStyles(createStyles);
+
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const isHeartRateExist = activity.heartRate !== undefined;
 
@@ -39,7 +41,7 @@ export default function ActivityCard({ activity }: { activity: Activity }) {
     )
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
     card: {
         backgroundColor: colors.card,
         padding: spacing.md,

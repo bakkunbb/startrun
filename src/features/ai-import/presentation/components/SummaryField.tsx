@@ -1,4 +1,4 @@
-import { colors, layout } from '@/app/theme';
+import { layout, ThemeColors, useColors, useStyles } from '@/app/theme';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import type { KeyboardTypeOptions } from 'react-native';
 
@@ -19,6 +19,9 @@ export function Field({
     label, unit, value, onChangeText, keyboardType,
     placeholder, multiline, invalid, uncertain, hint,
 }: FieldProps) {
+    const styles = useStyles(createStyles);
+    const colors = useColors();
+
     return (
         <View>
             <View style={styles.row}>
@@ -46,7 +49,7 @@ export function Field({
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
     row: {
         flexDirection: 'row',
         alignItems: 'center',
