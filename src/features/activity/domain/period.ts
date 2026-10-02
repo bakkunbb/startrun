@@ -142,71 +142,103 @@ export type SubBucket = {
     count: number;
 };
 
-/** 구간 내부를 잘게 나눈다. 주간=7일, 월간=주 단위 */
+/** 구간 내부를 하루 단위로 잘게 나눈다 */
 export function subBuckets(activities: Activity[], period: Period): SubBucket[] {
-    let buckets: SubBucket[] = [];
-    
-    if(period.unit === 'week') {
-        const filtered = activities.filter((activity) => activity.startedAt.getTime() >= period.start.getTime() && activity.startedAt.getTime() < period.end.getTime());
-        for(let i = 0; i < 7; i++) {
-            const startDate = new Date(period.start);
-            startDate.setDate(period.start.getDate() + i);
+    const buckets: SubBucket[] = [];
+    const filtered = activities.filter(
+        (activity) => activity.startedAt.getTime() >= period.start.getTime() && activity.startedAt.getTime() < period.end.getTime()
+    );
 
-            let distanceMeter = 0;
-            let count = 0;
+    const startDate = new Date(period.start);
 
-            filtered.map((act) => {
-                if(act.startedAt.toDateString() === startDate.toDateString()) {
-                    distanceMeter += act.distanceMeters;
-                    count += 1;
-                }
-            });
+    while(startDate.getTime() < period.end.getTime()) {
+        let distanceMeter = 0;
+        let count = 0;
 
-            buckets.push({
-                start: new Date(startDate),
-                distanceMeters: distanceMeter,
-                count: count
-            });
-        }
-    
-    } else {
-        const firstMonthDay = startOfMonth(period.start);
-        const lastMonthDay = new Date(firstMonthDay);
-        lastMonthDay.setMonth(firstMonthDay.getMonth() + 1);
-        lastMonthDay.setDate(firstMonthDay.getDate() - 1);
-        const firstWeekStartDay = startOfWeek(firstMonthDay);
-        const lastWeekStartDay = startOfWeek(lastMonthDay);
+        filtered.forEach((act) => {
+            if(act.startedAt.toDateString() === startDate.toDateString()) {
+                distanceMeter += act.distanceMeters;
+                count += 1;
+            }
+        });
 
-        const filtered = activities.filter((activity) => activity.startedAt.getTime() >= firstMonthDay.getTime() && activity.startedAt.getTime() < period.end.getTime());
+        buckets.push({
+            start: new Date(startDate),
+            distanceMeters: distanceMeter,
+            count: count
+        });
 
-        const startDate = new Date(firstWeekStartDay);
-        
-        while(startDate.getTime() <= lastWeekStartDay.getTime()) {
-            let distanceMeter = 0;
-            let count = 0;
-
-            filtered.map((act) => {
-                const endDate = new Date(startDate);
-                endDate.setDate(startDate.getDate() + 7)
-
-                if(act.startedAt.getTime() >= startDate.getTime() && act.startedAt.getTime() < endDate.getTime()) {
-                    distanceMeter += act.distanceMeters;
-                    count += 1;
-                }
-            });
-
-            buckets.push({
-                start: new Date(startDate),
-                distanceMeters: distanceMeter,
-                count: count,
-            })
-
-            startDate.setDate(startDate.getDate() + 7);
-        }
+        startDate.setDate(startDate.getDate() + 1);
     }
-    
+
     return buckets;
 }
+
+/** 구간 내부를 잘게 나눈다. 주간=7일, 월간=주 단위 */
+// export function subBuckets(activities: Activity[], period: Period): SubBucket[] {
+//     let buckets: SubBucket[] = [];
+    
+//     if(period.unit === 'week') {
+//         const filtered = activities.filter((activity) => activity.startedAt.getTime() >= period.start.getTime() && activity.startedAt.getTime() < period.end.getTime());
+//         for(let i = 0; i < 7; i++) {
+//             const startDate = new Date(period.start);
+//             startDate.setDate(period.start.getDate() + i);
+
+            // let distanceMeter = 0;
+            // let count = 0;
+
+            // filtered.map((act) => {
+            //     if(act.startedAt.toDateString() === startDate.toDateString()) {
+            //         distanceMeter += act.distanceMeters;
+            //         count += 1;
+            //     }
+            // });
+
+            // buckets.push({
+            //     start: new Date(startDate),
+            //     distanceMeters: distanceMeter,
+            //     count: count
+            // });
+//         }
+    
+//     } else {
+//         const firstMonthDay = startOfMonth(period.start);
+//         const lastMonthDay = new Date(firstMonthDay);
+//         lastMonthDay.setMonth(firstMonthDay.getMonth() + 1);
+//         lastMonthDay.setDate(firstMonthDay.getDate() - 1);
+//         const firstWeekStartDay = startOfWeek(firstMonthDay);
+//         const lastWeekStartDay = startOfWeek(lastMonthDay);
+
+//         const filtered = activities.filter((activity) => activity.startedAt.getTime() >= firstMonthDay.getTime() && activity.startedAt.getTime() < period.end.getTime());
+
+//         const startDate = new Date(firstWeekStartDay);
+        
+//         while(startDate.getTime() <= lastWeekStartDay.getTime()) {
+//             let distanceMeter = 0;
+//             let count = 0;
+
+//             filtered.map((act) => {
+//                 const endDate = new Date(startDate);
+//                 endDate.setDate(startDate.getDate() + 7)
+
+//                 if(act.startedAt.getTime() >= startDate.getTime() && act.startedAt.getTime() < endDate.getTime()) {
+//                     distanceMeter += act.distanceMeters;
+//                     count += 1;
+//                 }
+//             });
+
+//             buckets.push({
+//                 start: new Date(startDate),
+//                 distanceMeters: distanceMeter,
+//                 count: count,
+//             })
+
+//             startDate.setDate(startDate.getDate() + 7);
+//         }
+//     }
+    
+//     return buckets;
+// }
 
 /** SectionList에 그대로 넘길 수 있는 모양 */
 export type MonthSection = {

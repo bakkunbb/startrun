@@ -143,7 +143,6 @@ export function DetailScreen({ route }: { route: any }) {
                         <DetailHeader activity={activity} />
                         <MetricsGrid activity={activity} view={view} summary={summary} />
                     </ViewShot>
-
                 </ContextMenu>
             </View>
             {view ? (

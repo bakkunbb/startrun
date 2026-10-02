@@ -60,7 +60,8 @@ export function formatBucketLabel(start: Date, unit: PeriodUnit): string {
 
         return week[start.getDay()];
     } else {
-        return `${start.getMonth() + 1}/${start.getDate()}`;
+        // return `${start.getMonth() + 1}/${start.getDate()}`;
+        return `${start.getDate()}`;
     }
 }
 
