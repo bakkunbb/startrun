@@ -12,7 +12,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSaveImported } from "../hooks/useSaveImported";
 import { useDuplicateCheck } from "../hooks/useDuplicateCheck";
 import { formatDistanceKm, formatMonthDay } from "@/core/utils/format";
-import { colors, spacing } from "@/app/theme";
+import { spacing, ThemeColors, useColors, useStyles } from "@/app/theme";
 import { ExtractionDto } from "../../data/models/ExtractionDto";
 
 const WARNING_MESSAGES: Record<ExtractionWarning, string> = {
@@ -25,6 +25,9 @@ const WARNING_MESSAGES: Record<ExtractionWarning, string> = {
 };
 
 export function ReviewForm({ dto, onLeave }: { dto: ExtractionDto; onLeave: () => void }) {
+    const styles = useStyles(createStyles);
+    const colors = useColors();
+
     const insets = useSafeAreaInsets();
 
     const extracted = useMemo(() => toExtractedActivity(dto), [dto]);
@@ -155,7 +158,7 @@ export function ReviewForm({ dto, onLeave }: { dto: ExtractionDto; onLeave: () =
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
     flex: { flex: 1 },
     content: { paddingTop: 16, paddingBottom: 32, gap: 12 },
     basisHint: {

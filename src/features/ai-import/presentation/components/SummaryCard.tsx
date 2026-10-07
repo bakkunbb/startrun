@@ -4,11 +4,11 @@ import { ExtractedActivity } from "../../domain/entities/ExtractedActivity";
 import { useReviewDraft } from "../hooks/useReviewDraft";
 import { useState } from "react";
 import { DateTimeField } from "./DateTimeField";
-import { colors, layout } from "@/app/theme";
+import { layout, ThemeColors, useStyles } from "@/app/theme";
 import { formatPace } from "@/core/utils/format";
 
 export function SumamryCard({ activity, review }: { activity: ExtractedActivity; review: ReturnType<typeof useReviewDraft>; }) {
-
+    const styles = useStyles(createStyles);
     const [date, setDate] = useState(review.draft.startedAt ?? new Date())
 
     const { distanceMeters, durationSeconds } = review.draft;
@@ -17,7 +17,7 @@ export function SumamryCard({ activity, review }: { activity: ExtractedActivity;
         : null;
 
     return (
-        <View style={cardStyles.card}>
+        <View style={styles.card}>
             <Field
                 label="거리" unit="km"
                 value={review.inputs.distance} onChangeText={review.setDistanceInput}
@@ -32,9 +32,9 @@ export function SumamryCard({ activity, review }: { activity: ExtractedActivity;
                 invalid={activity.lowConfidenceFields.includes('durationSeconds')}
                 hint="52:31 또는 1:02:03 형식"
             />
-            <View style={cardStyles.row}>
-                <Text style={cardStyles.label}>평균 페이스</Text>
-                <Text style={cardStyles.paceValue}>{formatPace(pace)}/km</Text>
+            <View style={styles.row}>
+                <Text style={styles.label}>평균 페이스</Text>
+                <Text style={styles.paceValue}>{formatPace(pace)}/km</Text>
             </View>
             <Field
                 label="심박수"
@@ -59,7 +59,7 @@ export function SumamryCard({ activity, review }: { activity: ExtractedActivity;
     );
 }
 
-const cardStyles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
     card: {
         backgroundColor: colors.card,
         borderRadius: 12,

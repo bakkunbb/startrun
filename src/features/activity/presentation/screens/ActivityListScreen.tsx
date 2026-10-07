@@ -1,6 +1,6 @@
 import { useActivities } from "../hooks/useActivities";
 import ActivityCard from "../components/ActivityCard";
-import { FlatList, StyleSheet, View } from "react-native";
+import { SectionList, StyleSheet, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "@/app/navigation/RootNavigator";
@@ -9,13 +9,17 @@ import { HeaderAddButton } from "../components/HeaderAddButton";
 import { pickScreenShots } from "@/core/media/imagePicker";
 import { useImportStore } from "@/features/ai-import/presentation/stores/importStore";
 import { EmptyState } from "@/core/ui/EmptyState";
-import { colors, radius, spacing } from "@/app/theme";
+import { radius, spacing, ThemeColors, useStyles } from "@/app/theme";
 import { summarize, thisWeek } from "../../domain/periodSummary";
 import { WeeklySummaryStrip } from "../components/WeeklySummaryStrip";
+import { groupByMonth } from "../../domain/period";
+import { SectionHeader } from "../components/SectionHeader";
 
 export function ActivityListScreen() {
     const { data, isPending, error, refetch } = useActivities();
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const styles = useStyles(createStyles);
+
     const setImages = useImportStore((s) => s.setImages);
 
     const onAdd = useCallback(async () => {
@@ -69,17 +73,23 @@ export function ActivityListScreen() {
 
     return (
         <View style={styles.flex}>
-            <FlatList
-                data={data}
+            <SectionList
+                sections={groupByMonth(data)}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => <ActivityCard activity={item} />}
                 ListHeaderComponent={weekly.count > 0 ? <WeeklySummaryStrip summary={weekly} /> : null}
+                renderSectionHeader={({ section }) => <SectionHeader section={section} />}
+                ListEmptyComponent={(
+                    <EmptyState title="기록이 존재하지 않습니다" />
+                )}
+                contentContainerStyle={styles.content}
+                stickySectionHeadersEnabled
             />
         </View>
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
     flex: { flex: 1 },
     cardSkeleton: {
         backgroundColor: colors.card,
@@ -100,5 +110,9 @@ const styles = StyleSheet.create({
         width: '70%',
         borderRadius: radius.sm,
         backgroundColor: colors.bgSubtle,
+    },
+    content: {
+        paddingBottom: 96,        // FAB에 마지막 카드가 가리지 않도록
+        flexGrow: 1,              // 비었을 때 EmptyState가 세로 가운데로
     },
 });

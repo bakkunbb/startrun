@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { colors, layout, radius, spacing, typography } from "@/app/theme";
+import { layout, radius, spacing, ThemeColors, typography, useStyles } from "@/app/theme";
 
 type Props = {
     title: string;
@@ -9,6 +9,8 @@ type Props = {
 };
 
 export function EmptyState({ title, description, actionLabel, onAction }: Props) {
+    const styles = useStyles(createStyles);
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{title}</Text>
@@ -25,7 +27,7 @@ export function EmptyState({ title, description, actionLabel, onAction }: Props)
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',

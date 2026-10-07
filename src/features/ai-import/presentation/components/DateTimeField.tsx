@@ -1,4 +1,4 @@
-import { colors, layout } from "@/app/theme";
+import { layout, ThemeColors, useColors, useStyles } from "@/app/theme";
 import { formatDatetime } from "@/core/utils/format";
 import RNDateTimePicker, { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { useState } from "react";
@@ -12,6 +12,9 @@ type Props = {
 };
 
 export function DateTimeField({ label, value, onChange, uncertain }: Props) {
+    const styles = useStyles(createStyles);
+    const colors = useColors();
+
     const [iosOpen, setIosOpen] = useState(false);
 
     const openAdnroid = () => {
@@ -66,7 +69,7 @@ export function DateTimeField({ label, value, onChange, uncertain }: Props) {
     )
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemeColors) => StyleSheet.create({
     row: {
         flexDirection: 'row',
         alignItems: 'center',
